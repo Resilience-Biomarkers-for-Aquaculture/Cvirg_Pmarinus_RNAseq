@@ -1,0 +1,4 @@
+id,variable,reference,target,blocking
+treatment_Control_Dose_1-10-6,treatment,Control,Dose_1-10-6,breed
+treatment_Control_Dose_1-10-7,treatment,Control,Dose_1-10-7,breed
+treatment_Control_Dose_1-10-8,treatment,Control,Dose_1-10-8,breed
