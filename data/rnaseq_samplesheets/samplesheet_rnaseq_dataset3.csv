@@ -1,9 +1,4 @@
 sample,fastq_1,fastq_2,strandedness
-SRX13037862,/gscratch/scrubbed/strigg/analyses/20241205_FetchNGS/fastq/SRX13037862_SRR16844801.fastq.gz,,auto
-SRX13037863,/gscratch/scrubbed/strigg/analyses/20241205_FetchNGS/fastq/SRX13037863_SRR16844800.fastq.gz,,auto
-SRX13037864,/gscratch/scrubbed/strigg/analyses/20241205_FetchNGS/fastq/SRX13037864_SRR16844799.fastq.gz,,auto
-SRX13037865,/gscratch/scrubbed/strigg/analyses/20241205_FetchNGS/fastq/SRX13037865_SRR16844798.fastq.gz,,auto
-SRX13037866,/gscratch/scrubbed/strigg/analyses/20241205_FetchNGS/fastq/SRX13037866_SRR16844797.fastq.gz,,auto
 SRX13037867,/gscratch/scrubbed/strigg/analyses/20241205_FetchNGS/fastq/SRX13037867_SRR16844796.fastq.gz,,auto
 SRX13037868,/gscratch/scrubbed/strigg/analyses/20241205_FetchNGS/fastq/SRX13037868_SRR16844795.fastq.gz,,auto
 SRX13037869,/gscratch/scrubbed/strigg/analyses/20241205_FetchNGS/fastq/SRX13037869_SRR16844794.fastq.gz,,auto
