@@ -1,0 +1,271 @@
+---
+title: "qPCR data analysis"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+## load libraries
+```{r}
+library(readxl)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(plotrix)
+library(mgcv)
+library(ggsci)
+library(gplots)
+
+
+
+```
+
+
+## read in data
+
+```{r}
+#read in roberto's gene_count_matrix.csv
+rob_counts <- read.csv("gene_count_matrix (1).csv")
+
+#read in Emma's gene counts matrix
+nfcore_counts <- read_xlsx("salmon_merged_gene_counts.xlsx")
+
+#read in meta data
+meta_data <- read.csv("SraRunTable.csv")
+
+#read in roberto's data that has been subsetted for genes matched to LOC IDs using the genome compare files (see jupyter notebook)
+sub_rob_counts <- read.csv("gene_count_matrix_roberto_CGI2LOC_prev.csv", header =F)
+#add header robertos subsetted gene counts matrix
+colnames(sub_rob_counts) <- c("gene_id", "gene_name", colnames(rob_counts[,2:ncol(rob_counts)]))
+
+#read in Emma's data that has been subsetted for genes that overlap with roberto's subsetted genes
+sub_nfcore_counts <- nfcore_counts[which(nfcore_counts$gene_id %in% sub_rob_counts$gene_id),]
+
+#read in genes ID'd as high exp genes in heat resistant oysteres from Roberto's paper (copied from supp table 6)
+hi_genes <- read_xlsx("heat_tol_high_exp_genes.xlsx")
+
+
+#read id conversion table
+convs <- read.csv("../20241217/gene_id_conversion_Roberto-GCF_963853765.1_xbMagGiga1.txt", sep = "\t", header = F)
+
+rob_counts_conv <- read.csv("gene_count_matrix_blastConv.csv", header = F)
+colnames(rob_counts_conv) <- c("gene_id", "gene_name", colnames(rob_counts[,2:ncol(rob_counts)]))
+
+nfcore_counts_conv <- nfcore_counts[which(nfcore_counts$gene_id %in% rob_counts_conv$gene_id),]
+```
+
+
+## Check subsetted data
+```{r}
+#count rows in Emma's subsetted data
+nrow(sub_nfcore_counts)
+# 1901
+
+nrow(sub_rob_counts)
+#1916
+
+#There are more genes in Roberto's subsetted data than in Emma's meaning some LOC ids are listed multiple times
+#further subset Roberto's data so that it only contains the unique IDs that are in Emma's subsetted data
+sub_rob_counts <- sub_rob_counts[which(sub_rob_counts$gene_id %in% nfcore_counts$gene_id),]
+rob_counts_conv <- rob_counts_conv[which(rob_counts_conv$gene_id %in% nfcore_counts_conv$gene_id),]
+
+
+nrow(sub_rob_counts)
+#1913
+
+#There are still duplicate LOC ids remaining in the list because there are still more genes in Roberto's data
+#make vector of duplicated LOC ids in Roberto's data
+dups <- sub_rob_counts[duplicated(sub_rob_counts$gene_id),]$gene_id
+
+dups_conv <- rob_counts_conv[duplicated(rob_counts_conv$gene_id),]$gene_id
+
+
+#exclude LOC IDs that have multiple CGIs associated with them. (These are genes that were previously annotated as multiple genes and are now merged into one)
+sub_nfcore_counts <- sub_nfcore_counts %>% filter(!(gene_id %in% dups))
+sub_rob_counts <- sub_rob_counts %>% filter(!(gene_id %in% dups))
+
+nfcore_counts_conv_nodups <- nfcore_counts_conv%>% filter(!(gene_id %in% dups_conv))
+rob_counts_conv_nodups <- rob_counts_conv %>% filter(!(gene_id %in% dups_conv))
+nrow(rob_counts_conv_nodups)
+nrow(nfcore_counts_conv_nodups)
+
+nrow(sub_nfcore_counts)
+#1890
+nrow(sub_rob_counts)
+#1890
+
+#now there are the same number of rows and genes!
+```
+
+
+## format data
+```{r}
+#convert matrix to long format (all sample columns condense into one column with counts in another column)
+rob_counts_l <- rob_counts %>% pivot_longer(2:ncol(rob_counts), names_to = "Library.Name", values_to = "counts")
+#convert to long format
+nfcore_counts_l <- nfcore_counts %>% pivot_longer(3:ncol(nfcore_counts), names_to = "Experiment", values_to = "counts")
+
+#merge with meta data
+rob_counts_l <- merge(meta_data[,c("Experiment", "Library.Name", "family", "timepoint..day.","trait")], rob_counts_l, by = "Library.Name")
+#merge with meta data
+nfcore_counts_l <- merge(meta_data[,c("Experiment", "Library.Name", "family", "timepoint..day.","trait")],nfcore_counts_l, by = "Experiment")
+
+
+#convert subsetted data to long format and merge with meta data
+sub_rob_counts_l <- sub_rob_counts %>% pivot_longer(3:ncol(sub_rob_counts), names_to = "Library.Name", values_to = "counts") %>% left_join(meta_data[,c("Experiment", "Library.Name", "family", "timepoint..day.","trait")], by = "Library.Name")
+
+sub_nfcore_counts_l <- sub_nfcore_counts %>% pivot_longer(3:ncol(sub_nfcore_counts), names_to = "Experiment", values_to = "counts") %>% left_join(meta_data[,c("Experiment", "Library.Name", "family", "timepoint..day.","trait")], by = "Experiment")
+
+
+#convert subsetted data to long format and merge with meta data
+rob_counts_conv_l <- rob_counts_conv_nodups %>% pivot_longer(3:ncol(rob_counts_conv_nodups), names_to = "Library.Name", values_to = "counts") %>% left_join(meta_data[,c("Experiment", "Library.Name", "family", "timepoint..day.","trait")], by = "Library.Name")
+
+nfcore_counts_conv_l <- nfcore_counts_conv_nodups %>% pivot_longer(3:ncol(nfcore_counts_conv_nodups), names_to = "Experiment", values_to = "counts") %>% left_join(meta_data[,c("Experiment", "Library.Name", "family", "timepoint..day.","trait")], by = "Experiment")
+
+
+
+
+#add column to denote method
+rob_counts_l$method <- "old"
+nfcore_counts_l$method <- "nf-core"
+sub_nfcore_counts_l$method <- "nf-core"
+sub_rob_counts_l$method <- "old"
+rob_counts_conv_l$method <- "old"
+nfcore_counts_conv_l$method <- "nf-core"
+
+#remove gene_name column from Emma's data so rows from Roberto's data and Emma's data can be combined
+nfcore_counts_l$gene_name <- NULL
+
+
+#add column for new gene id
+#rob_counts_l$gene_id_old <- rob_counts_l$gene_id
+#nfcore_counts_l$gene_id_new <- nfcore_counts_l$gene_id
+
+#colnames(convs) <- c("gene_id_new", "gene_id_old")
+
+#nf_core_counts_l_idmatch <- merge(nfcore_counts_l,convs, by = "gene_id_new")
+#rob_counts_l_idmatch <- merge(rob_counts_l, convs, by = "gene_id_old")
+
+#combine roberto's and emma's data into one df
+all_data <- rbind(rob_counts_l,nfcore_counts_l)
+all_sub_data <- rbind(sub_rob_counts_l, sub_nfcore_counts_l)
+all_data_conv <- rbind(rob_counts_conv_l, nfcore_counts_conv_l)
+
+#create a vector of samples to exclude from data because Roberto excluded these from his comparisons
+excluded <- c("Os22", "Os23", "Os24", "Os25", "Os26","Os27", "Os4", "Os5", "Os6", "Os7", "Os8", "Os9")
+
+#exclude samples Roberto excluded from analysis, remove gene_name column and spread methods column out so that it can be plotted as as a scatter plot
+all_sub_data <- all_sub_data %>% filter(!(Library.Name %in% excluded))%>% dplyr::select(-gene_name) %>% pivot_wider(names_from = method, values_from = counts)
+
+all_data_conv <- all_data_conv  %>% filter(!(Library.Name %in% excluded))%>% dplyr::select(-gene_name) %>% pivot_wider(names_from = method, values_from = counts)
+
+```
+
+
+## plot histograms for each library
+```{r}
+jpeg("histograms.jpg", width = 7, height = 5, units = "in", res = 300)
+all_data %>% filter(!(Library.Name %in% excluded))%>% ggplot(aes(log10(counts), fill = method)) + geom_histogram(alpha = 0.5) + labs(x = "counts (log10)", y = "# genes") + theme_bw() + facet_wrap(~Library.Name)
+dev.off()
+
+jpeg("density_plots.jpg", width = 7, height = 5, units = "in", res = 300)
+all_data %>% filter(!(Library.Name %in% excluded))%>% ggplot(aes(log10(counts), color = method,fill = method, alpha = 0.2)) + geom_density(alpha = 0.2) + labs(x = "counts (log10)", y = "% genes") + theme_bw() + facet_wrap(~Library.Name)
+dev.off()
+
+```
+
+## make scatter plot of each library
+```{r}
+#create scatter plots of nf-core counts x roberto's counts for each sample
+jpeg("corplot_2K_eachSample.jpg", width = 10, height = 7, units = "in", res = 300)
+ all_sub_data%>% ggplot(aes(log10(old+0.5),log10(`nf-core`+0.5))) + geom_point() + labs(x = "Roberto counts (log10(+0.5))", y = "nf-core counts (log10(+0.5))") + theme_bw() + facet_wrap(~Library.Name) + ggtitle("1,890 overlapping genes comparing to prev.txt doc")
+dev.off()
+
+ all_data_conv%>% ggplot(aes(log10(old+0.5),log10(`nf-core`+0.5))) + geom_point() + labs(x = "Roberto counts (log10(+0.5))", y = "nf-core counts (log10(+0.5))") + theme_bw() + facet_wrap(~Library.Name) + ggtitle(" overlapping genes comparing to prev.txt doc")
+
+
+
+#create on scatter plot of nf-core counts x roberto's counts for all samples
+jpeg("corplot_2K.jpg", width = 5, height = 4, units = "in", res = 300)
+all_sub_data%>% ggplot(aes(log10(old+0.5),log10(`nf-core`+0.5))) + geom_point() + labs(x = "Roberto counts (log10(+0.5))", y = "nf-core counts (log10(+0.5))") + theme_bw() + ggtitle("1,890 overlapping genes comparing to prev.txt doc")
+dev.off()
+
+
+```
+
+
+make bins for different zero and non-zero categories
+```{r}
+all_sub_data$zero_cat <- NA
+all_sub_data$zero_cat[which(all_sub_data$old==0 & all_sub_data$`nf-core`==0)] <- "both_0"
+all_sub_data$zero_cat[which(all_sub_data$old==0 & all_sub_data$`nf-core`!=0)] <- "emma_only"
+all_sub_data$zero_cat[which(all_sub_data$old!=0 & all_sub_data$`nf-core`==0)] <- "rob_only"
+all_sub_data$zero_cat[which(all_sub_data$old!=0 & all_sub_data$`nf-core`!=0)] <- "both_non0"
+
+
+all_data_conv$zero_cat <- NA
+all_data_conv$zero_cat[which(all_data_conv$old==0 & all_data_conv$`nf-core`==0)] <- "both_0"
+all_data_conv$zero_cat[which(all_data_conv$old==0 & all_data_conv$`nf-core`!=0)] <- "emma_only"
+all_data_conv$zero_cat[which(all_data_conv$old!=0 & all_data_conv$`nf-core`==0)] <- "rob_only"
+all_data_conv$zero_cat[which(all_data_conv$old!=0 & all_data_conv$`nf-core`!=0)] <- "both_non0"
+
+
+
+
+jpeg("hist_zeroVSnonzeros.jpg", width = 8, height = 3, units = "in", res = 300)
+all_sub_data %>% filter(zero_cat != "both0" & zero_cat !="both_non0") %>% pivot_longer(7:8, names_to = "method", values_to = "count")%>% filter(count !=0) %>%ggplot(aes(x = log10(count), fill = zero_cat)) + geom_histogram(position = position_dodge()) + theme_bw() + labs(x = "counts(log10)", y= "# genes", fill = "method") + ggtitle("Genes with 0 counts in one method and non-zero in the other\n (9,065 non-zero in Emma's and 796 non-zero in Roberto's only)")
+dev.off()
+
+jpeg("scatter_nonzeros.jpg", width = 5, height = 4, units = "in", res = 300)
+all_sub_data%>% filter(zero_cat =="both_non0") %>% ggplot(aes(log10(old+0.5),log10(`nf-core`+0.5))) + geom_point() + labs(x = "Roberto counts (log10(+0.5))", y = "nf-core counts (log10(+0.5))") + theme_bw() + ggtitle("3,959 genes with non-zero counts in both methods ")
+dev.off()
+
+jpeg("hexbin_nonzeros.jpg", width = 5, height = 4, units = "in", res = 300)
+all_sub_data%>% filter(zero_cat =="both_non0") %>% ggplot(aes(old,`nf-core`)) + geom_hex() + labs(x = "Roberto counts", y = "nf-core counts") + theme_bw() + ggtitle("3,959 genes with non-zero counts in both methods ")
+dev.off()
+
+all_data_conv%>% filter(zero_cat =="both_non0") %>% ggplot(aes(log10(old+0.5),log10(`nf-core`+0.5))) + geom_hex() + labs(x = "Roberto counts", y = "nf-core counts") + theme_bw() + ggtitle("10,489 genes with non-zero counts in both methods ")
+
+
+
+```
+
+
+
+## plot distribution of counts for genes Roberto id'd as highly expressed in resistant oysters
+```{r}
+jpeg("heat_resistant_high_exp_genes_boxplots.jpg", width = 13, height = 10, units = "in", res = 300)
+nfcore_counts_l %>% filter(gene_id %in% hi_genes$gene_id) %>% ggplot(aes(x = trait,y = log10(counts+0.5), group = interaction(gene_id,trait),fill = trait))+ geom_violin(alpha = 0.5)+ geom_boxplot(width = 0.2, alpha = 0.2, outlier.shape = NA)+geom_jitter(alpha = 0.5,size = 1.2, width = 0.1) + theme_bw()+ theme(axis.text.x = element_text(angle = 45, hjust = 1))+ labs(y = "log10(counts + 0.5)", fill = "sample")+ facet_wrap(~gene_id, scale = "free") +ggtitle("genes Roberto id'd as high exp. in resistant samples")+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())
+dev.off()
+
+
+all_data_conv %>% filter(gene_id %in% hi_genes$gene_id) %>% pivot_longer(7:8, names_to = "method", values_to = "counts")%>% ggplot(aes(x = trait,y = log10(counts+0.5), group = interaction(gene_id,trait),fill = trait))+ geom_violin(alpha = 0.5)+ geom_boxplot(width = 0.2, alpha = 0.2, outlier.shape = NA)+geom_jitter(alpha = 0.5,size = 1.2, width = 0.1) + theme_bw()+ theme(axis.text.x = element_text(angle = 45, hjust = 1))+ labs(y = "log10(counts + 0.5)", fill = "sample")+ facet_grid(gene_id~method, scale = "free") +ggtitle("genes Roberto id'd as high exp. in resistant samples")+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())
+
+all_data %>% filter(grepl("MSTRG.8347|MSTRG.1123$|MSTRG.8348", gene_id))%>% ggplot(aes(x = trait,y = log10(counts+0.5), group = interaction(gene_id,trait),fill = trait))+ geom_violin(alpha = 0.5)+ geom_boxplot(width = 0.2, alpha = 0.2, outlier.shape = NA)+geom_jitter(alpha = 0.5,size = 1.2, width = 0.1) + theme_bw()+ theme(axis.text.x = element_text(angle = 45, hjust = 1))+ labs(y = "log10(counts + 0.5)", fill = "sample")+ facet_wrap(~gene_id, scale = "free") +ggtitle("genes Roberto id'd as high exp. in resistant samples")+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())
+
+#make list of ids that are in hi genes
+hi_conv_ids <- convs[which(convs$V1 %in% hi_genes$gene_id),]
+
+MSTRG.1123 MSTRG.8347 MSTRG.8348
+
+```
+
+
+#make heatmap of all genes * this is incomplete
+
+```{r}
+Rmatrix <- as.matrix(rob_counts[,!(colnames(rob_counts)%in%excluded)] %>% filter(gene_id %in% hi_conv_ids$V2) %>% dplyr::select(-gene_id) )
+
+Nmatrix <- as.matrix(nfcore_counts[,!(colnames(nfcore_counts)%in%excluded)]  %>% dplyr::select(-gene_id) %>% dplyr::select(-gene_name))
+
+
+
+Rmatrix <- Rmatrix[rowSums(Rmatrix[])>0,]
+Nmatrix <- Nmatrix[rowSums(Nmatrix[])>0,]
+Rmatrix[Rmatrix==0] <- 0.5
+Nmatrix[Nmatrix==0] <- 0.5
+
+heatmap.2(log10(Rmatrix),Rowv = T, dendrogram = "both", tracecol = NA)
+
+```
