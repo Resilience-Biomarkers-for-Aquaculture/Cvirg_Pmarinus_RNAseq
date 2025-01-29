@@ -5,14 +5,14 @@
 library(tidyverse)
 
 fetchNGS_samplehseet <- 
-  read.csv("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_samplesheets/samplesheet_fetchNGSoutput.csv") 
+  read.csv("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_samplesheets/samplesheet_fetchNGS_dataset5.csv") 
 
 rnaseq_samplesheet <- fetchNGS_samplehseet %>%
   dplyr::select(sample, fastq_1, fastq_2) %>%
   mutate(strandedness = "auto")
 
 rnaseq_samplesheet %>% 
-  write.csv("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_samplesheets/samplesheet_rnaseq_full.csv",
+  write.csv("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_samplesheets/samplesheet_rnaseq_dataset5.csv",
             row.names = FALSE)
 
 
