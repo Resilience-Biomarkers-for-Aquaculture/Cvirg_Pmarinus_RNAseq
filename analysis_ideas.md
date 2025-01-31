@@ -71,7 +71,7 @@ link:  https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmar
 
 Oyster origin: Vermilion Bay, Louisiana & Calcasieu Lake, Louisiana. 5 months acclimation at hatchery then spawned. Spat reared in upwelling system and outplanted to mesh bags. Monitored for mortality and cleaned every 3 months for 14-month period
 
-![Slide 4 Image](images/slide_5_image.png)
+![Slide 4 Image](images/slide_4_image.png)
 
 ### Dataset #2 further notes
 
