@@ -16,7 +16,7 @@ fgene-12-795706.pdf as Dataset 3
 Please create a table summarizing the key findings across studies, with the datasets in order in the column headings
 ```
 
-##Caveat
+## Caveat
 I have not yet validated these summaries by re-examining the paper.
 
 | Key Findings                                                               | Dataset 1                                                     | Dataset 2                                                         | Dataset 3                                                        | Dataset 4                                                   | Dataset 5                                                                   |
