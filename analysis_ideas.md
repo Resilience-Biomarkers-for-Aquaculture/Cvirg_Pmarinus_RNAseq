@@ -112,7 +112,7 @@ Apoptosis inhibitors were the focus of a key finding: they were strongly upregul
 > Second, this study identified 759 and 568 P. marinus induced DEGs in C. virginica and C. gigas [respectively] (Supplementary Figure S3), respectively, with significant overlapping.
 
 I think the 759 number refers to the total across the 24 h and the 30 d samples (surprisingly), because it says:
-> 759 genes were differentially expressed in oysters challenged with P. marinus (VD1 and VD2) compared with unchallenged controls (V0, VC1, and VC2) (Supplemenatary Table S2), including 583 DEGs from short-term challenge (24 h) and 273 DEGs
+> 759 genes were differentially expressed in oysters challenged with P. marinus (VD1 and VD2) compared with unchallenged controls (V0, VC1, and VC2) (Supplemenatary Table S2), including 583 DEGs from short-term challenge (24 h) and 273 DEGs from long-term challenge (30 days).
 
 We may be left to infer that the 568 DEG number for C. gigas is also summed over both intervals. Actually, that notion is supported by Supplementary Figure S3:
 
