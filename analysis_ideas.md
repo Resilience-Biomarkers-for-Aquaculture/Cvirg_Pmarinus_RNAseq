@@ -161,12 +161,12 @@ gene expression analysis focused on mantle tissues collected from two families i
 
 Though it says "Significant differences in baseline expression between the two families were revealed when we compared all control samples among families", the main result seems to be that the two families' response curves, if you will, were different.
 From 3.3. Differential expression analysis
-For the resistant family, number of differentially expressed transcripts relative to resistant control at three time points post-injection:
+For the resistant family, number of differentially expressed transcripts relative to resistant control at three time points post-injection:  
 36 h: 278  
 7 d: 387  
 28 d: 21  
 
-For the susceptible family, number of differentially expressed transcripts relative to susceptible control at three time points post-injection:
+For the susceptible family, number of differentially expressed transcripts relative to susceptible control at three time points post-injection:  
 36 h: 99  
 7 d: 61  
 28 d: 1918
