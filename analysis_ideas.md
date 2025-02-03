@@ -108,7 +108,7 @@ Apoptosis inhibitors were the focus of a key finding: they were strongly upregul
 #### Notable for our work, regarding C. gigas it says:
 > On the other hand, this study and a recent transcriptomic study (Proestou and Sullivan, 2020) shared only 39 DEGs (Supplemenatary Table S4), which could be caused by differences in challenge condition, genetic background or physiological state of oysters used.
 
-Given the great differences between the susceptible family and the resistant family in Dataset #5, this is not suprising.
+Given the great differences between the susceptible family and the resistant family in Proestou and Sullivan, 2020 (Dataset #5), this is not suprising.
 
 #### Even so, it says:
 > Second, this study identified 759 and 568 P. marinus induced DEGs in C. virginica and C. gigas [respectively] (Supplementary Figure S3), respectively, with significant overlapping.
