@@ -4,26 +4,24 @@
 
 Can we find these just looking at the data they already analyzed?
 
-Are there more previously identified DEGs overlapping after we systematically reprocess and compare
-Use their results short list
+Are there more previously identified DEGs overlapping after we systematically reprocess and compare  
+Use their results short list  
 Are there new DEGs that come up?
 
 Use this model for all datasets? Overview of R Package lfmm • lfmm; WGCNA; Deseq2; random forest
 
-Gene groups to target after diff exp. Analysis
+Gene groups to target after diff exp. Analysis  
 Immune gene set: 
-(find set of genes associated with oyster immunity)
+(find set of genes associated with oyster immunity)  
 E.g. Cytokines or use GO slim ‘immune response’ 
 
 Compare gene set results tables in papers to our results
 
-5 overlapping DEGs from their results table
-
-20 overlapping DEGs from their results tables
-
+5 overlapping DEGs from their results table  
+20 overlapping DEGs from their results tables  
 100 overlapping DEGs from their results tables
 
-Perkinsus RNAseq analysis with 4 datasets
+Perkinsus RNAseq analysis with 4 datasets  
 ![alt text](images/slide_1_image.png)
 
 # Slide 2
