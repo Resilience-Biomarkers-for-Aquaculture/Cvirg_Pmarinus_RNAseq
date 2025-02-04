@@ -100,16 +100,16 @@ SRX7656960,B,Eastern Oyster,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0
 SRX7656959,B,Eastern Oyster,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0
 SRX7656958,A,Eastern Oyster,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0
 SRX7656957,A,Eastern Oyster,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0
-SRX13037871,,,Control,sensitive,gill,0.0,,PRJNA778545,
-SRX13037870,,,Control,sensitive,gill,24.0,,PRJNA778545,
-SRX13037869,,,Control,sensitive,gill,3.0,,PRJNA778545,
-SRX13037868,,,Injection,sensitive,gill,24.0,,PRJNA778545,
-SRX13037867,,,Injection,sensitive,gill,3.0,,PRJNA778545,
-SRX13037866,,,Control,tolerant,gill,0.0,,PRJNA778545,
-SRX13037865,,,Control,tolerant,gill,24.0,,PRJNA778545,
-SRX13037864,,,Control,tolerant,gill,3.0,,PRJNA778545,
-SRX13037863,,,Injection,tolerant,gill,24.0,,PRJNA778545,
-SRX13037862,,,Injection,tolerant,gill,3.0,,PRJNA778545,
+SRX13037871,,,Control,sensitive,gill,0.0,,PRJNA778545,1.0
+SRX13037870,,,Control,sensitive,gill,24.0,,PRJNA778545,1.0
+SRX13037869,,,Control,sensitive,gill,3.0,,PRJNA778545,1.0
+SRX13037868,,,Injection,sensitive,gill,24.0,,PRJNA778545,1.0
+SRX13037867,,,Injection,sensitive,gill,3.0,,PRJNA778545,1.0
+SRX13037866,,,Control,tolerant,gill,0.0,,PRJNA778545,1.0
+SRX13037865,,,Control,tolerant,gill,24.0,,PRJNA778545,1.0
+SRX13037864,,,Control,tolerant,gill,3.0,,PRJNA778545,1.0
+SRX13037863,,,Injection,tolerant,gill,24.0,,PRJNA778545,1.0
+SRX13037862,,,Injection,tolerant,gill,3.0,,PRJNA778545,1.0
 SRX9845543,,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,6/26/2015,PRJNA691949,1.0
 SRX9845542,,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/1/2015,PRJNA691949,1.0
 SRX9845541,,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/22/2015,PRJNA691949,1.0
