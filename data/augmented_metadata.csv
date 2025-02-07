@@ -1,0 +1,218 @@
+Experiment,BREED,treatment,Trait,tissue,collection_time,Collection_Date,BioProject,subset,TRSS
+SRX18040064,ABC_VIMS_Family_2017084,Dose 1x10^6,tolerant,mantle,,6/20/2018,PRJNA894694,0.0,tolerant
+SRX18040063,ABC_VIMS_Family_2017084,Control,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040062,ABC_VIMS_Family_2017120,Dose 1x10^6,sensitive,mantle,,6/20/2018,PRJNA894694,0.0,sensitive
+SRX18040061,ABC_VIMS_Family_2017120,Dose 1x10^8,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040060,ABC_VIMS_Family_2017090,Dose 1x10^6,sensitive,mantle,,6/20/2018,PRJNA894694,0.0,sensitive
+SRX18040059,ABC_VIMS_Family_2017120,Dose 1x10^7,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040057,ABC_VIMS_Family_2017090,Control,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040056,ABC_VIMS_Family_2017089,Dose 1x10^6,tolerant,mantle,,6/20/2018,PRJNA894694,0.0,tolerant
+SRX18040055,ABC_VIMS_Family_2017084,Dose 1x10^8,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040058,ABC_VIMS_Family_2017090,Dose 1x10^8,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040054,ABC_VIMS_Family_2017120,Dose 1x10^8,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040053,ABC_VIMS_Family_2017120,Control,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040052,ABC_VIMS_Family_2017090,Dose 1x10^8,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040051,ABC_VIMS_Family_2017090,Control,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040049,ABC_VIMS_Family_2017090,Control,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040048,ABC_VIMS_Family_2017089,Dose 1x10^6,tolerant,mantle,,6/20/2018,PRJNA894694,0.0,tolerant
+SRX18040046,ABC_VIMS_Family_2017120,Dose 1x10^6,sensitive,mantle,,6/20/2018,PRJNA894694,0.0,sensitive
+SRX18040045,ABC_VIMS_Family_2017090,Dose 1x10^7,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040044,ABC_VIMS_Family_2017090,Dose 1x10^6,sensitive,mantle,,6/20/2018,PRJNA894694,0.0,sensitive
+SRX18040047,ABC_VIMS_Family_2017089,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040043,ABC_VIMS_Family_2017089,Dose 1x10^8,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040042,ABC_VIMS_Family_2017089,Control,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040041,ABC_VIMS_Family_2017084,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040040,ABC_VIMS_Family_2017084,Dose 1x10^6,tolerant,mantle,,6/20/2018,PRJNA894694,0.0,tolerant
+SRX18040038,ABC_VIMS_Family_2017120,Dose 1x10^6,sensitive,mantle,,6/20/2018,PRJNA894694,0.0,sensitive
+SRX18040037,ABC_VIMS_Family_2017090,Dose 1x10^7,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040036,ABC_VIMS_Family_2017084,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040039,ABC_VIMS_Family_2017120,Dose 1x10^7,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040035,ABC_VIMS_Family_2017090,Dose 1x10^6,sensitive,mantle,,6/20/2018,PRJNA894694,0.0,sensitive
+SRX18040034,ABC_VIMS_Family_2017089,Dose 1x10^8,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040033,ABC_VIMS_Family_2017089,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040032,ABC_VIMS_Family_2017084,Dose 1x10^6,tolerant,mantle,,6/20/2018,PRJNA894694,0.0,tolerant
+SRX18040030,ABC_VIMS_Family_2017120,Dose 1x10^7,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040029,ABC_VIMS_Family_2017120,Dose 1x10^6,sensitive,mantle,,6/20/2018,PRJNA894694,0.0,sensitive
+SRX18040028,ABC_VIMS_Family_2017090,Dose 1x10^6,sensitive,mantle,,6/20/2018,PRJNA894694,0.0,sensitive
+SRX18040031,ABC_VIMS_Family_2017084,Control,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040027,ABC_VIMS_Family_2017089,Dose 1x10^8,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040026,ABC_VIMS_Family_2017084,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040025,ABC_VIMS_Family_2017084,Dose 1x10^8,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040050,ABC_VIMS_Family_2017089,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040006,ABC_VIMS_Family_2017089,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040024,ABC_VIMS_Family_2017120,Dose 1x10^8,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040023,ABC_VIMS_Family_2017120,Control,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040022,ABC_VIMS_Family_2017090,Dose 1x10^8,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040021,ABC_VIMS_Family_2017090,Dose 1x10^7,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040020,ABC_VIMS_Family_2017089,Dose 1x10^6,tolerant,mantle,,6/20/2018,PRJNA894694,0.0,tolerant
+SRX18040019,ABC_VIMS_Family_2017089,Control,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040018,ABC_VIMS_Family_2017084,Dose 1x10^8,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040017,ABC_VIMS_Family_2017089,Dose 1x10^8,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040016,ABC_VIMS_Family_2017120,Dose 1x10^8,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040015,ABC_VIMS_Family_2017120,Control,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040014,ABC_VIMS_Family_2017090,Dose 1x10^8,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040013,ABC_VIMS_Family_2017090,Dose 1x10^7,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040012,ABC_VIMS_Family_2017089,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040011,ABC_VIMS_Family_2017089,Dose 1x10^6,tolerant,mantle,,6/20/2018,PRJNA894694,0.0,tolerant
+SRX18040010,ABC_VIMS_Family_2017089,Control,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040009,ABC_VIMS_Family_2017084,Dose 1x10^8,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040008,ABC_VIMS_Family_2017084,Dose 1x10^7,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX18040007,ABC_VIMS_Family_2017120,Dose 1x10^7,sensitive,mantle,,6/20/2018,PRJNA894694,1.0,sensitive
+SRX18040005,ABC_VIMS_Family_2017084,Dose 1x10^6,tolerant,mantle,,6/20/2018,PRJNA894694,0.0,tolerant
+SRX18040004,ABC_VIMS_Family_2017084,Control,tolerant,mantle,,6/20/2018,PRJNA894694,1.0,tolerant
+SRX7656996,Eastern Oyster_B,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0,resistant
+SRX7656995,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656994,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656993,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656992,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656991,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656990,Eastern Oyster_D,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656989,Eastern Oyster_D,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656988,Eastern Oyster_D,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656987,Eastern Oyster_D,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656986,Eastern Oyster_D,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656985,Eastern Oyster_C,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656984,Eastern Oyster_C,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656983,Eastern Oyster_C,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656982,Eastern Oyster_C,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656981,Eastern Oyster_B,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0,resistant
+SRX7656980,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656979,Eastern Oyster_B,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0,resistant
+SRX7656978,Eastern Oyster_B,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0,resistant
+SRX7656977,Eastern Oyster_B,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0,resistant
+SRX7656976,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656975,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656974,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656973,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656972,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656971,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656970,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656969,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656968,Eastern Oyster_D,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656967,Eastern Oyster_D,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656966,Eastern Oyster_D,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656965,Eastern Oyster_C,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656964,Eastern Oyster_C,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656963,Eastern Oyster_C,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656962,Eastern Oyster_C,field,sensitive,Gill,,4/24/2018,PRJNA604121,1.0,susceptible
+SRX7656961,Eastern Oyster_B,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0,resistant
+SRX7656960,Eastern Oyster_B,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0,resistant
+SRX7656959,Eastern Oyster_B,field,tolerant,Gill,,4/24/2018,PRJNA604121,0.0,resistant
+SRX7656958,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX7656957,Eastern Oyster_A,field,tolerant,Gill,,4/24/2018,PRJNA604121,1.0,resistant
+SRX13037871,Crassostrea virginica,Control,sensitive,gill,0.0,,PRJNA778545,1.0,susceptible
+SRX13037870,Crassostrea virginica,Control,sensitive,gill,24.0,,PRJNA778545,1.0,susceptible
+SRX13037869,Crassostrea virginica,Control,sensitive,gill,3.0,,PRJNA778545,1.0,susceptible
+SRX13037868,Crassostrea virginica,Injection,sensitive,gill,24.0,,PRJNA778545,1.0,susceptible
+SRX13037867,Crassostrea virginica,Injection,sensitive,gill,3.0,,PRJNA778545,1.0,susceptible
+SRX13037866,Crassostrea gigas,Control,tolerant,gill,0.0,,PRJNA778545,1.0,resistant
+SRX13037865,Crassostrea gigas,Control,tolerant,gill,24.0,,PRJNA778545,1.0,resistant
+SRX13037864,Crassostrea gigas,Control,tolerant,gill,3.0,,PRJNA778545,1.0,resistant
+SRX13037863,Crassostrea gigas,Injection,tolerant,gill,24.0,,PRJNA778545,1.0,resistant
+SRX13037862,Crassostrea gigas,Injection,tolerant,gill,3.0,,PRJNA778545,1.0,resistant
+SRX9845543,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845542,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845541,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845540,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845539,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845534,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845523,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845512,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845511,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845510,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845509,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845508,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845507,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845506,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845505,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845504,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845503,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845502,ABC_VIMS_Family_2014_286,Injected,sensitive,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845501,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845500,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845538,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,7/1/2015,PRJNA691949,0.0,unknown
+SRX9845537,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,6/26/2015,PRJNA691949,0.0,unknown
+SRX9845536,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,6/26/2015,PRJNA691949,0.0,unknown
+SRX9845535,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,6/26/2015,PRJNA691949,0.0,unknown
+SRX9845533,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,6/24/2015,PRJNA691949,0.0,unknown
+SRX9845532,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,6/24/2015,PRJNA691949,0.0,unknown
+SRX9845531,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,6/24/2015,PRJNA691949,0.0,unknown
+SRX9845530,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845529,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845528,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/22/2015,PRJNA691949,1.0,unknown
+SRX9845527,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845526,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845525,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,7/1/2015,PRJNA691949,1.0,unknown
+SRX9845524,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845522,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845521,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,6/26/2015,PRJNA691949,1.0,unknown
+SRX9845520,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,6/24/2015,PRJNA691949,1.0,unknown
+SRX9845519,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,6/24/2015,PRJNA691949,1.0,unknown
+SRX9845518,ABC_VIMS_Family_2014_286,Control,tolerant,mantle,,6/24/2015,PRJNA691949,1.0,unknown
+SRX9845517,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,7/22/2015,PRJNA691949,0.0,unknown
+SRX9845516,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,7/22/2015,PRJNA691949,0.0,unknown
+SRX9845515,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,7/22/2015,PRJNA691949,0.0,unknown
+SRX9845514,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,7/1/2015,PRJNA691949,0.0,unknown
+SRX9845513,ABC_VIMS_Family_2014_286,Fed,tolerant,mantle,,7/1/2015,PRJNA691949,0.0,unknown
+SRX7172573,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172559,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172553,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172552,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172545,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172544,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172524,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172562,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172558,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172557,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172556,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172555,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172554,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172550,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172549,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172548,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172547,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172546,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172543,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172530,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172523,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172522,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172521,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172520,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172519,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172518,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172578,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172574,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172569,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172568,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172561,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172560,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172534,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172533,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172529,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172528,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172525,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172579,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172577,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172576,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172575,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172572,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172571,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172570,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172567,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172566,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172565,ABC_VIMS_Family_2014_266,Injected,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172564,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172563,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172551,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172542,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172541,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,6/26/2015,PRJNA590205,0.0,resistant
+SRX7172540,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/1/2015,PRJNA590205,1.0,resistant
+SRX7172539,ABC_VIMS_Family_2014_266,Control,tolerant,mantle,,7/22/2015,PRJNA590205,1.0,resistant
+SRX7172538,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172537,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172536,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172535,ABC_VIMS_Family_2014_242,Control,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172532,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
+SRX7172531,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/1/2015,PRJNA590205,1.0,susceptible
+SRX7172527,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,7/22/2015,PRJNA590205,1.0,susceptible
+SRX7172526,ABC_VIMS_Family_2014_242,Injected,sensitive,mantle,,6/26/2015,PRJNA590205,0.0,susceptible
