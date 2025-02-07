@@ -27,17 +27,16 @@ trait_data["Family"] = trait_data["Family"].astype(str)
 # Determine the number of digits in Family and extract corresponding final digits from BREED
 trait_data["Family_digits"] = trait_data["Family"].str.len()
 
-def extract_last_n_digits(breed, max_digits):
+def extract_last_n_digits(breed, family_length):
     """Extracts the last n digits from BREED based on Family length."""
     breed_str = str(breed)
-    for digits in sorted(trait_data["Family_digits"].unique(), reverse=True):
-        if len(breed_str) >= digits:
-            return breed_str[-digits:]
+    if len(breed_str) >= family_length:
+        return breed_str[-family_length:]
     return None
 
-# Apply extraction function
-metadata_df["BREED_extracted"] = metadata_df["BREED"].astype(str).apply(
-    lambda x: extract_last_n_digits(x, trait_data["Family_digits"].max())
+# Apply extraction function dynamically for each row
+metadata_df["BREED_extracted"] = metadata_df.apply(
+    lambda row: extract_last_n_digits(row["BREED"], trait_data["Family_digits"].max()), axis=1
 )
 
 # Perform the first merge: Match BioProject and dynamically extracted digits from BREED
@@ -51,7 +50,7 @@ merged_df = merged_df.merge(trait_data[["BioProject", "Family", "Trait"]],
                             right_on=["BioProject", "Family"], suffixes=('', '_trait2'))
 
 # Assign TRSS values from the second table only
-merged_df["TRSS"] = merged_df["Trait_trait1"].combine_first(merged_df["Trait_trait2"])
+merged_df["TRSS"] = merged_df["Trait"].combine_first(merged_df["Trait_trait1"]).combine_first(merged_df["Trait_trait2"])
 
 # Ensure TRSS values are locked before proceeding further
 trss_values_after_fix = merged_df["TRSS"].notna().sum()
@@ -61,6 +60,7 @@ merged_df.loc[merged_df["BioProject"] == "PRJNA778545", "TRSS"] = "TBD"
 
 # Ensure the TRSS column is not accidentally removed
 columns_to_keep = list(metadata_df.columns) + ["TRSS"]
+columns_to_keep.remove("BREED_extracted")
 merged_df = merged_df[columns_to_keep]
 
 # Save updated metadata file
