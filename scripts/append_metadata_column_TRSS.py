@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the metadata CSV file
-metadata_file_path = "/home/syost/git/Cvirg_Pmarinus_RNAseq/data/merged_metadata.csv"  # Change this if needed
+metadata_file_path = "/home/syost/git/Cvirg_Pmarinus_RNAseq/data/merged_metadata.csv"  # Update this path if needed
 metadata_df = pd.read_csv(metadata_file_path)
 
 # Manually defined second table (replace this with a CSV read if available)
@@ -36,10 +36,12 @@ def extract_last_n_digits(breed, max_digits):
     return None
 
 # Apply extraction function
-metadata_df["BREED_extracted"] = metadata_df["BREED"].apply(lambda x: extract_last_n_digits(x, trait_data["Family_digits"].max()))
+metadata_df["BREED_extracted"] = metadata_df["BREED"].astype(str).apply(
+    lambda x: extract_last_n_digits(x, trait_data["Family_digits"].max())
+)
 
 # Perform the first merge: Match BioProject and dynamically extracted digits from BREED
-merged_df = metadata_df.merge(trait_data[["BioProject", "Family", "Trait", "Family_digits"]], 
+merged_df = metadata_df.merge(trait_data[["BioProject", "Family", "Trait"]], 
                               how='left', left_on=["BioProject", "BREED_extracted"],
                               right_on=["BioProject", "Family"], suffixes=('', '_trait1'))
 
@@ -51,11 +53,15 @@ merged_df = merged_df.merge(trait_data[["BioProject", "Family", "Trait"]],
 # Assign TRSS values from the second table only
 merged_df["TRSS"] = merged_df["Trait_trait1"].combine_first(merged_df["Trait_trait2"])
 
+# Ensure TRSS values are locked before proceeding further
+trss_values_after_fix = merged_df["TRSS"].notna().sum()
+
 # For rows with BioProject 'PRJNA778545', set TRSS to 'TBD'
 merged_df.loc[merged_df["BioProject"] == "PRJNA778545", "TRSS"] = "TBD"
 
-# Drop unnecessary columns while keeping the original Trait column
-merged_df.drop(columns=["BREED_extracted", "Family", "Family_trait2", "Trait_trait1", "Trait_trait2", "Family_digits"], inplace=True)
+# Ensure the TRSS column is not accidentally removed
+columns_to_keep = list(metadata_df.columns) + ["TRSS"]
+merged_df = merged_df[columns_to_keep]
 
 # Save updated metadata file
 updated_metadata_path = "updated_metadata_final.csv"
