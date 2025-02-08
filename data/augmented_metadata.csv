@@ -103,7 +103,7 @@ SRX7656957,Eastern Oyster_A,field,tolerant,gill,,4/24/2018,PRJNA604121,1.0,resis
 SRX13037871,Crassostrea virginica,Control,sensitive,gill,0,,PRJNA778545,1.0,susceptible
 SRX13037870,Crassostrea virginica,Control,sensitive,gill,1,,PRJNA778545,1.0,susceptible
 SRX13037869,Crassostrea virginica,Control,sensitive,gill,30,,PRJNA778545,1.0,susceptible
-SRX13037868,Crassostrea virginica,Injected,sensitive,gill,1,PRJNA778545,1.0,susceptible
+SRX13037868,Crassostrea virginica,Injected,sensitive,gill,1,,PRJNA778545,1.0,susceptible
 SRX13037867,Crassostrea virginica,Injected,sensitive,gill,30,,PRJNA778545,1.0,susceptible
 SRX13037866,Crassostrea gigas,Control,tolerant,gill,0,,PRJNA778545,1.0,resistant
 SRX13037865,Crassostrea gigas,Control,tolerant,gill,1,,PRJNA778545,1.0,resistant
