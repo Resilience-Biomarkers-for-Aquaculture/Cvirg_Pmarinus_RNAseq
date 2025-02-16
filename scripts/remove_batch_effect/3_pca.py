@@ -29,7 +29,7 @@ pca = PCA(n_components=2)
 pca_result = pca.fit_transform(batch_corrected_transposed)
 
 # Merge PCA results with metadata
-pca_df_corrected = pd.DataFrame(pca_result, columns=["PC1", "PC2"], index=batch_corrected_transposed.index)
+pca_df_corrected = pd.DataFrame(pca_result, columns=["PC1", "PC2"],index=batch_corrected_transposed.index)
 pca_df_corrected = pca_df_corrected.merge(metadata_new[['Experiment', 'Study', 'control', 'Collection_Interval_Days', 'Trait' ]], left_index=True, right_on='Experiment')
 
 # Create a colormap for the unique Study values
