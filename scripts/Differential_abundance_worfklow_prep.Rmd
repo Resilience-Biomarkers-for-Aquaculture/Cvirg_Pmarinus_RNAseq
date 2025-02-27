@@ -1,0 +1,52 @@
+---
+title: "Untitled"
+output: html_document
+date: "2025-02-26"
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+### This is the merged rnaseq counts for the 5 projects
+data <- read.delim2("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_gene_counts/merged_gene_counts.tsv")
+
+genes <- data %>% dplyr::select(gene_id) %>% distinct()
+### 38,828 genes from merged set 
+
+### length example
+dataset1_lengths <- read.delim2("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_gene_lengths/salmon.merged.gene_lengths_dataset1.tsv")
+
+######## decided on the length scaled counts 
+dataset1_scaled <- read.delim2("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset1.tsv")
+dataset2_scaled <- read.delim2("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset2.tsv")
+dataset3_scaled <- read.delim2("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset3.tsv")
+dataset4_scaled <- read.delim2("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset4.tsv")
+dataset5_scaled <- read.delim2("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset5.tsv")
+
+dataset_scaled_joined <- full_join(dataset1_scaled, dataset2_scaled) %>% full_join(., dataset3_scaled) %>%
+  full_join(., dataset4_scaled) %>% full_join(., dataset5_scaled)
+
+length(unique(dataset_scaled_joined$gene_id)) ## 38,828
+ncol(dataset_scaled_joined) - 2 ## number of samples = 217
+
+dataset_scaled_joined %>% 
+  write_delim("C:/Users/EmmaStrand/MyProjects/Resilience_Biomarkers_Aquaculture/Cvirg_Pmarinus_RNAseq/data/rnaseq_gene_counts/merged_gene_counts_scaled.tsv")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
