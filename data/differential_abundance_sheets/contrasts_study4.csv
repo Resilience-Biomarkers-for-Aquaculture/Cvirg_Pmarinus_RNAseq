@@ -1,0 +1,3 @@
+id,variable,reference,target,blocking
+D6_treatment_control_fed,treatment,Control,Fed,batch
+D6_treatment_control_inj,treatment,Control,Injected,batch
