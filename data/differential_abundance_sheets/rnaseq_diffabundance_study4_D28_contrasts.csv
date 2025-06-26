@@ -1,4 +1,4 @@
 id,variable,reference,target,blocking
 D28_treatment_control_fed_block,treatment,Control,Fed,batch
 D28_treatment_control_inj_block,treatment,Control,Injected,batch
-D28_treatment_control_fed_block,treatment,Fed,Injected, batch
+D28_treatment_control_fed_block,treatment,Fed,Injected,batch
