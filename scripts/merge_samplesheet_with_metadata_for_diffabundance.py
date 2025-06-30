@@ -1,8 +1,8 @@
 import csv
 
 # Input file paths
-samplesheet_path = "rnaseq_difabundance_study4_s3_samplesheet.csv"
-metadata_path = "augmented_metadata.csv"
+samplesheet_path = "rnaseq_diffabundance_study5_D26_s3_samplesheet.csv"
+metadata_path = "../augmented_metadata.csv"
 output_path = "joined_output.csv"
 
 # Read metadata file into a dictionary keyed by 'Experiment'
@@ -19,7 +19,7 @@ with open(samplesheet_path, newline='') as samplefile, open(output_path, "w", ne
     # Determine output fieldnames
     sample_fields = sample_reader.fieldnames
     # meta_fields = [f for f in next(iter(metadata_dict.values())).keys() if f != "Experiment"]
-    meta_fields = ['treatment']
+    meta_fields = ['treatment', 'batch', 'Collection_Interval_Days', 'TRSS']
     output_fields = sample_fields + meta_fields
 
     writer = csv.DictWriter(outfile, fieldnames=output_fields)
