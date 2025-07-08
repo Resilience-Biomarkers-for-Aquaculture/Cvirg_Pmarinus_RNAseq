@@ -1,5 +1,4 @@
 sample,fastq_1,fastq_2,treatment,batch
-SRX9845501,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845501_SRR13430608_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845501_SRR13430608_2.fastq.gz,Control,2017.0
 SRX9845503,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845503_SRR13430606_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845503_SRR13430606_2.fastq.gz,Injected,2017.0
 SRX9845505,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845505_SRR13430604_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845505_SRR13430604_2.fastq.gz,Injected,2017.0
 SRX9845508,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845508_SRR13430601_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845508_SRR13430601_2.fastq.gz,Injected,2017.0
@@ -8,12 +7,8 @@ SRX9845512,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845512_SRR134
 SRX9845515,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845515_SRR13430594_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845515_SRR13430594_2.fastq.gz,Fed,2015.0
 SRX9845516,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845516_SRR13430593_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845516_SRR13430593_2.fastq.gz,Fed,2015.0
 SRX9845517,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845517_SRR13430592_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845517_SRR13430592_2.fastq.gz,Fed,2015.0
-SRX9845518,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845518_SRR13430591_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845518_SRR13430591_2.fastq.gz,Control,2015.0
-SRX9845519,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845519_SRR13430590_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845519_SRR13430590_2.fastq.gz,Control,2015.0
-SRX9845520,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845520_SRR13430589_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845520_SRR13430589_2.fastq.gz,Control,2015.0
 SRX9845523,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845523_SRR13430586_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845523_SRR13430586_2.fastq.gz,Control,2017.0
 SRX9845528,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845528_SRR13430581_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845528_SRR13430581_2.fastq.gz,Control,2015.0
 SRX9845529,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845529_SRR13430580_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845529_SRR13430580_2.fastq.gz,Control,2015.0
 SRX9845530,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845530_SRR13430579_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845530_SRR13430579_2.fastq.gz,Control,2015.0
-SRX9845534,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845534_SRR13430575_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845534_SRR13430575_2.fastq.gz,Control,2017.0
 SRX9845541,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845541_SRR13430568_1.fastq.gz,s3://steveyost-seqera/Cvirg_Pmarinus/fetchngs/fastq/SRX9845541_SRR13430568_2.fastq.gz,Injected,2017.0
