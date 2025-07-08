@@ -1,7 +1,9 @@
 from collections import defaultdict
 import csv
 
-def parse_goa_to_gmt(goa_file, gmt_file, use_symbol=True, min_genes=10, exclude_codes={"ND", "IEA"}):
+def parse_goa_to_gmt(goa_file, gmt_file, use_symbol=True, min_genes=10, 
+        exclude_codes={"ND"}):
+        # exclude_codes={"ND", "IEA"}):
     go_terms = defaultdict(set)
 
     with open(goa_file, 'r') as f:
@@ -17,7 +19,7 @@ def parse_goa_to_gmt(goa_file, gmt_file, use_symbol=True, min_genes=10, exclude_
             evidence = cols[6]
 
             if evidence in exclude_codes:
-                continue
+               continue
 
             go_terms[go_id].add(gene_id)
 
