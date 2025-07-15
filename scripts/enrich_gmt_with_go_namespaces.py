@@ -16,10 +16,10 @@ def enrich_gmt_with_go_namespaces(gmt_in, obo_file, gmt_out):
             if go_id in go_dag:
                 term_name = go_dag[go_id].name
                 namespace = go_dag[go_id].namespace  # biological_process, molecular_function, cellular_component
-                label = f"{term_name} [{namespace}]"
+                label = f"{go_id} – {term_name} [{namespace}]"
             else:
                 label = row[1]  # fallback to existing label if GO ID missing
-            writer.writerow([go_id, label] + row[2:])
+            writer.writerow([label, label] + row[2:]) # Use label in columns 1 and 2 so it comes through in report
 
     print(f"Updated GMT written to {gmt_out}")
 
