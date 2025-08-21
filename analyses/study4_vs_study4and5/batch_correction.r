@@ -6,10 +6,10 @@ library(ggplot2)
 library(patchwork)
 library(stringr)
 
-setwd("//wsl.localhost/Ubuntu/home/syost/git/Cvirg_Pmarinus_RNAseq/scripts")
+setwd("//wsl.localhost/Ubuntu/home/syost/git/Cvirg_Pmarinus_RNAseq/analyses/study4_vs_study4and5")
 
-counts_path <- ("../data/study4and5_genelength_D28_results_all_normalized_counts.tsv")
-samplesheet_path <- ("../data/differential_abundance_sheets/rnaseq_diffabundance_study4and5_D2N_s3_samplesheet.csv")
+counts_path <- ("study4and5_genelength_D28_results_all_normalized_counts.tsv")
+samplesheet_path <- ("../../data/differential_abundance_sheets/rnaseq_diffabundance_study4and5_D2N_s3_samplesheet.csv")
 
 
 # ---- Parameters ----
