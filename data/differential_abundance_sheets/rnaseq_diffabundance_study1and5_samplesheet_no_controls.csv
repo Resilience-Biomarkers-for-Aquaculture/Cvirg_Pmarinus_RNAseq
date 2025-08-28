@@ -1,0 +1,61 @@
+sample,condition,treatment,batch,Collection_Interval_Days
+SRX18040005,tolerant,Injected,P&S 2023,7.0
+SRX18040006,tolerant,Injected,P&S 2023,7.0
+SRX18040007,sensitive,Injected,P&S 2023,7.0
+SRX18040008,tolerant,Injected,P&S 2023,7.0
+SRX18040009,tolerant,Injected,P&S 2023,7.0
+SRX18040011,tolerant,Injected,P&S 2023,7.0
+SRX18040012,tolerant,Injected,P&S 2023,7.0
+SRX18040013,sensitive,Injected,P&S 2023,7.0
+SRX18040014,sensitive,Injected,P&S 2023,7.0
+SRX18040016,sensitive,Injected,P&S 2023,7.0
+SRX18040017,tolerant,Injected,P&S 2023,7.0
+SRX18040018,tolerant,Injected,P&S 2023,7.0
+SRX18040019,tolerant,Control,P&S 2023,7.0
+SRX18040020,tolerant,Injected,P&S 2023,7.0
+SRX18040021,sensitive,Injected,P&S 2023,7.0
+SRX18040022,sensitive,Injected,P&S 2023,7.0
+SRX18040024,sensitive,Injected,P&S 2023,7.0
+SRX18040025,tolerant,Injected,P&S 2023,7.0
+SRX18040026,tolerant,Injected,P&S 2023,7.0
+SRX18040027,tolerant,Injected,P&S 2023,7.0
+SRX18040028,sensitive,Injected,P&S 2023,7.0
+SRX18040029,sensitive,Injected,P&S 2023,7.0
+SRX18040030,sensitive,Injected,P&S 2023,7.0
+SRX18040032,tolerant,Injected,P&S 2023,7.0
+SRX18040033,tolerant,Injected,P&S 2023,7.0
+SRX18040034,tolerant,Injected,P&S 2023,7.0
+SRX18040035,sensitive,Injected,P&S 2023,7.0
+SRX18040036,tolerant,Injected,P&S 2023,7.0
+SRX18040037,sensitive,Injected,P&S 2023,7.0
+SRX18040038,sensitive,Injected,P&S 2023,7.0
+SRX18040039,sensitive,Injected,P&S 2023,7.0
+SRX18040040,tolerant,Injected,P&S 2023,7.0
+SRX18040041,tolerant,Injected,P&S 2023,7.0
+SRX18040043,tolerant,Injected,P&S 2023,7.0
+SRX18040044,sensitive,Injected,P&S 2023,7.0
+SRX18040045,sensitive,Injected,P&S 2023,7.0
+SRX18040046,sensitive,Injected,P&S 2023,7.0
+SRX18040047,tolerant,Injected,P&S 2023,7.0
+SRX18040048,tolerant,Injected,P&S 2023,7.0
+SRX18040050,tolerant,Injected,P&S 2023,7.0
+SRX18040052,sensitive,Injected,P&S 2023,7.0
+SRX18040054,sensitive,Injected,P&S 2023,7.0
+SRX18040055,tolerant,Injected,P&S 2023,7.0
+SRX18040056,tolerant,Injected,P&S 2023,7.0
+SRX18040058,sensitive,Injected,P&S 2023,7.0
+SRX18040059,sensitive,Injected,P&S 2023,7.0
+SRX18040060,sensitive,Injected,P&S 2023,7.0
+SRX18040061,sensitive,Injected,P&S 2023,7.0
+SRX18040062,sensitive,Injected,P&S 2023,7.0
+SRX18040064,tolerant,Injected,P&S 2023,7.0
+SRX7172523,tolerant,Injected,P&S 2020 2017,5.0
+SRX7172528,sensitive,Injected,P&S 2020 2015,5.0
+SRX7172531,sensitive,Injected,P&S 2020 2015,5.0
+SRX7172533,sensitive,Injected,P&S 2020 2015,5.0
+SRX7172551,sensitive,Injected,P&S 2020 2017,5.0
+SRX7172553,tolerant,Injected,P&S 2020 2017,5.0
+SRX7172559,sensitive,Injected,P&S 2020 2017,5.0
+SRX7172567,tolerant,Injected,P&S 2020 2015,5.0
+SRX7172568,tolerant,Injected,P&S 2020 2015,5.0
+SRX7172571,tolerant,Injected,P&S 2020 2015,5.0
