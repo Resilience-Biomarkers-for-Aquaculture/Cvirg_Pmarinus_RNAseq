@@ -1,0 +1,2 @@
+id,variable,reference,target,blocking
+D7_treatment_resistant_sensitive_block,condition,sensitive,tolerant,batch
