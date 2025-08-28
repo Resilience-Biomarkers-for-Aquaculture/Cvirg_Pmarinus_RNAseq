@@ -1,0 +1,22 @@
+sample,condition,treatment,batch,Collection_Interval_Days
+SRX7172523,tolerant,Injected,P&S 2020 2017,5.0
+SRX7172528,sensitive,Injected,P&S 2020 2015,5.0
+SRX7172530,sensitive,Control,P&S 2020 2017,5.0
+SRX7172531,sensitive,Injected,P&S 2020 2015,5.0
+SRX7172533,sensitive,Injected,P&S 2020 2015,5.0
+SRX7172537,sensitive,Control,P&S 2020 2015,5.0
+SRX7172540,tolerant,Control,P&S 2020 2015,5.0
+SRX7172542,tolerant,Control,P&S 2020 2015,5.0
+SRX7172544,tolerant,Control,P&S 2020 2017,5.0
+SRX7172549,tolerant,Control,P&S 2020 2017,5.0
+SRX7172551,sensitive,Injected,P&S 2020 2017,5.0
+SRX7172553,tolerant,Injected,P&S 2020 2017,5.0
+SRX7172554,sensitive,Control,P&S 2020 2017,5.0
+SRX7172559,sensitive,Injected,P&S 2020 2017,5.0
+SRX7172560,sensitive,Control,P&S 2020 2015,5.0
+SRX7172562,sensitive,Control,P&S 2020 2017,5.0
+SRX7172564,sensitive,Control,P&S 2020 2015,5.0
+SRX7172567,tolerant,Injected,P&S 2020 2015,5.0
+SRX7172568,tolerant,Injected,P&S 2020 2015,5.0
+SRX7172571,tolerant,Injected,P&S 2020 2015,5.0
+SRX7172575,tolerant,Control,P&S 2020 2015,5.0
