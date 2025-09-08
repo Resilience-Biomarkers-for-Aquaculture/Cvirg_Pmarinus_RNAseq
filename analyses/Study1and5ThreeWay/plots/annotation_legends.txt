@@ -1,0 +1,7 @@
+Condition legend:
+  code 0 -> sensitive
+  code 1 -> tolerant
+Batch legend:
+  code 0 -> P&S 2020 2015
+  code 1 -> P&S 2020 2017
+  code 2 -> P&S 2023
