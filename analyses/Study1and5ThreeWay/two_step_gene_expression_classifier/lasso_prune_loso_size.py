@@ -9,11 +9,11 @@ End-to-end classifier pipeline using:
   - Optional Tier1+Tier2 gene list restriction
 Implements: stability lasso + redundancy pruning + LOSO/LOGO evaluation.
 
-Outputs:
-  stability_selection.csv
-  panel_size_sweep_metrics.csv
-  final_panel_gene_list.txt
-  loso_by_heldout.csv
+Output files:
+  stability_selection.csv (gene, selection_prob, mean_abs_coef_when_selected)
+  panel_size_sweep_metrics.csv (m, auroc_mean, auroc_min, aupr_mean, brier_mean)
+  final_panel_gene_list.txt (one gene per line)
+  loso_by_heldout.csv (heldout, n_te, auroc, aupr, brier per held-out group)
 """
 
 import numpy as np
@@ -29,10 +29,10 @@ from sklearn.calibration import CalibratedClassifierCV
 
 
 # -------------------------------
-# User-editable paths
+# User-editable paths for input data
 # -------------------------------
 VST_PATH = "DESEQ2_NORM_all.vst.tsv"  # nf-core DESEQ2_NORM VST matrix (genes x samples; first col = gene_id)
-META_PATH = "../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled.csv"
+META_PATH = "../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled.csv"
 GENE_LIST_PATH = "panel_candidates_tier12.txt"
 
 # Optional: remap free-form batch labels to abstract groups (A,B1,B2) for LOGO clarity

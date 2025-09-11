@@ -7,7 +7,7 @@ import os
 # Inputs
 # -----------------------------
 VST_PATH = "DESEQ2_NORM_all.vst.tsv"
-META_PATH = "../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled.csv"
+META_PATH = "../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled.csv"
 PANEL_PATH = "final_panel_gene_list.txt"
 
 # -----------------------------
