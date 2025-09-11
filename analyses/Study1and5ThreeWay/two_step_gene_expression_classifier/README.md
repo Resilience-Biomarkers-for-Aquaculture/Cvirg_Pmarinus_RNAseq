@@ -46,6 +46,7 @@ This directory contains scripts for conducting a two-step gene expression classi
 - `panel_candidates_tier12.txt`: Output from the R script listing tier 1 and 2 gene candidates.
 - `lasso_prune_loso_size.py`: Python script for LASSO panel pruning, optionally constrained by `panel_candidates_tier12.txt`.
 - `final_panel_gene_list.txt`: Output from `lasso_prune_loso_size.py` listing selected gene panel.
+- `plot_final_panel.py`: Python script to produce plots for evaluating gene counts for the identified genes across all samples.
 - `final_panel_classifier.py`: Python script to train and evaluate a final classifier using the selected panel.
 
 ## Usage Notes
