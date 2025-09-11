@@ -3,6 +3,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+"""
+Visualize expression of final panel genes across all samples.
+Outputs:
+    Heatmap (genes × samples, sorted by condition then batch):
+    plots/heatmap_panel_genes.png
+
+    Condition annotation bar (aligned to heatmap width):
+    plots/annotation_condition.png
+
+    Batch annotation bar (aligned to heatmap width):
+    plots/annotation_batch.png
+
+    Mapping of annotation codes to labels:
+    plots/annotation_legends.txt
+
+    Violin plots per gene:
+    plots/violin_<gene>.png
+"""
+
 # -----------------------------
 # Inputs
 # -----------------------------
