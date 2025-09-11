@@ -54,6 +54,7 @@ This directory contains scripts for conducting a two-step gene expression classi
 - The analysis is flexible; if you wish to use all genes for panel selection, you may skip `panel_candidates_tier12.txt`.
 - Ensure that required input files for each script are available in this directory and relative paths before running them.
 - Outputs from earlier steps may be required to run subsequent scripts, as outlined above.
+- See comments in the scripts for more comprehensive description of input and output files for each.
 
 ## Citation
 
