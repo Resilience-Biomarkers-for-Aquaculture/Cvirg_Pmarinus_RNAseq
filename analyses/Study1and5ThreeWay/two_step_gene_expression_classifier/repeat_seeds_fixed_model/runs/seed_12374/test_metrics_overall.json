@@ -1,0 +1,10 @@
+{
+  "seed": 12374,
+  "n_test": 22,
+  "auroc": 1.0,
+  "aupr": 1.0,
+  "brier": 5.617259357832585e-11,
+  "log_loss": 2.225532058523563e-06,
+  "cal_slope": 1.0,
+  "cal_intercept": 0.0
+}
