@@ -7,6 +7,10 @@
 #     Step (2) Meta-analysis across A & B (FE/RE, I^2), reproducibility score
 #     Step (3) Tiering rules with sign-concordance and C support
 #   Also preps outputs for Python modeling (Steps 4–5).
+#     Outputs:
+#       meta_ranked.csv  (full meta-analysis results with scores) 
+#       tiers.csv        (full results with Tier assignments)
+#       panel_candidates_tier12.txt (Tier 1+2 genes for modeling)
 # ===============================
 
 suppressPackageStartupMessages({
@@ -20,9 +24,9 @@ suppressPackageStartupMessages({
 # [User-editable paths]
 #   Replace with your actual files from nf-core/differentialabundance exports.
 # -------------------------------
-A_path <- "Study1_D7_treatment_resistant_sensitive.deseq2.results.tsv"   # Study A DE table
-B_path <- "Study5_D7_treatment_resistant_sensitive.deseq2.results.tsv"   # Study B DE table
-C_path <- "Issue44_study1and5_D7_treatment_resistant_sensitive_block.deseq2.results.tsv"   # Combined A+B DE table (optional for bonuses/tiering)
+A_path <- "../Study1_D7_treatment_resistant_sensitive.deseq2.results.tsv"   # Study A DE table
+B_path <- "../Study5_D7_treatment_resistant_sensitive.deseq2.results.tsv"   # Study B DE table
+C_path <- "../Issue44_study1and5_D7_treatment_resistant_sensitive_block.deseq2.results.tsv"   # Combined A+B DE table (optional for bonuses/tiering)
 
 # -------------------------------
 # [Step 1] Load results & define common universe (A ∩ B)
