@@ -6,7 +6,7 @@
 End-to-end classifier pipeline using:
   - nf-core/differentialabundance DESEQ2_NORM VST matrix (genes x samples)
   - Original metadata CSV (raw; cleaned inline)
-  - Optional Tier1+Tier2 gene list restriction
+  - Tier1+Tier2 gene list restriction (to assist logistic regression convergence)
 Implements: stability lasso + redundancy pruning + LOSO/LOGO evaluation.
 
 Output files:
@@ -142,6 +142,7 @@ def composite_strata(y, batch):
 def fit_l1_logreg(X, y, C=0.1, l1_ratio=None, seed=0):
     """Logistic regression with L1 (lasso) or elastic net (if l1_ratio provided)."""
     penalty = "l1" if l1_ratio is None else "elasticnet"
+    print(f"[DEBUG] fit_li_logreg")
     clf = LogisticRegression(
         penalty=penalty,
         l1_ratio=l1_ratio,
@@ -304,12 +305,15 @@ if __name__ == "__main__":
     print(f"[DEBUG] Condition counts: {meta['condition'].value_counts().to_dict()}")
     print(f"[DEBUG] Unique batches: {np.unique(batch)}")
 
-    # 5) Optional feature restriction (Tier1+Tier2)
+    # 5) Feature restriction (Tier1+Tier2)
     if GENE_LIST_PATH and Path(GENE_LIST_PATH).exists():
         keep_genes = pd.read_csv(GENE_LIST_PATH, header=None, names=["gene"])["gene"].tolist()
         keep_genes = [g for g in keep_genes if g in X_df.columns]
         X_df = X_df[keep_genes]
         print(f"[DEBUG] Restricted to Tier1+Tier2 features present in X: {X_df.shape[1]} genes")
+    else:
+        print(f"Missing or empty GENE_LIST_PATH {GENE_LIST_PATH}; cannot proceed.")
+        exit(1)
 
     # Sanity: keep only numeric columns (should already be numeric for VST)
     numeric_cols = X_df.columns[X_df.dtypes.apply(lambda t: np.issubdtype(t, np.number))]
