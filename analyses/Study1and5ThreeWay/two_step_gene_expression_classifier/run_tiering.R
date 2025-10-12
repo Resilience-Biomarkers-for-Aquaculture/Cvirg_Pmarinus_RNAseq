@@ -46,9 +46,6 @@ guess_delim <- function(path) if (str_detect(tolower(path), "\\.tsv(\\.gz)?$")) 
 
 read_counts <- function(path) {
   df <- read_delim(path, delim = guess_delim(path), show_col_types = FALSE)
-  message(sprintf("head of %s:", path))
-  print(head(df))
-
   colnames(df)[1] <- "gene_id"
   as.data.frame(df)
 }
@@ -74,181 +71,77 @@ ensure_two_batches <- function(batches) {
   u
 }
 
-deseq_per_batch <- function(counts_sxg, meta_s, batch_id,
-                            min_row_sum = 10L) {
+deseq_per_batch <- function(counts_sxg, meta_s, batch_id, min_row_sum = 10L) {
   message("\n[INFO] ==== deseq_per_batch(", batch_id, ") ====")
 
-  # --- subset samples for this batch ---------------------------------------
-  keep_idx <- meta_s$batch == batch_id
-  meta_b <- meta_s[keep_idx, , drop = FALSE]
-  if (nrow(meta_b) < 2) stop("Batch ", batch_id, " has <2 samples in train")
+  # --- subset metadata and samples ---
+  meta_b <- meta_s[meta_s$batch == batch_id, , drop = FALSE]
+  if (nrow(meta_b) < 2) stop("Batch ", batch_id, " has <2 samples")
+  if (!all(c("tolerant","sensitive") %in% unique(meta_b$condition)))
+    stop("Batch ", batch_id, " missing tolerant or sensitive samples")
 
-  # --- check both conditions present ---------------------------------------
-  cond_tab <- table(meta_b$condition)
-  if (!all(c("tolerant","sensitive") %in% names(cond_tab))) {
-    stop("Batch ", batch_id, " missing one of {tolerant,sensitive}")
-  }
-  message("[DEBUG] n_samples: ", nrow(meta_b),
-          " | tolerant=", cond_tab["tolerant"],
-          " | sensitive=", cond_tab["sensitive"])
-
-  # --- subset count matrix -------------------------------------------------
   smp <- meta_b$sample
-  
-  
-  
-  # --- subset count matrix and ensure gene IDs are rownames ------------------
-    if ("gene_id" %in% colnames(counts_sxg)) {
-    message("[DEBUG] Using 'gene_id' column as rownames for DESeq2 input.")
-    X <- counts_sxg
-    rownames(X) <- X$gene_id
-    X$gene_id <- NULL
-    X <- X[, smp, drop = FALSE]
-    } else {
-    X <- counts_sxg[, smp, drop = FALSE]
-    if (is.null(rownames(X))) {
-        stop("[ERROR] No gene_id column or rownames in counts_sxg.")
-    }
-    }
-    message("[DEBUG] Example rownames now: ", paste(head(rownames(X)), collapse = ", "))
 
-  
-  
-  message("[DEBUG] Subset counts: ", nrow(X), " genes x ", ncol(X), " samples")
-
-  # --- ensure gene IDs are rownames ----------------------------------------
-  if (!is.null(counts_sxg$gene_id)) {
-    message("[DEBUG] Setting gene_id column as rownames")
-    rownames(X) <- counts_sxg$gene_id
-  } else if (is.null(rownames(X))) {
-    stop("[ERROR] counts_sxg has neither rownames nor gene_id column")
+  # --- prepare count matrix with gene IDs as rownames ---
+  if ("gene_id" %in% colnames(counts_sxg)) {
+    rownames(counts_sxg) <- counts_sxg$gene_id
+    counts_sxg$gene_id <- NULL
   }
-  message("[DEBUG] Example rownames before filtering: ",
-          paste(head(rownames(X)), collapse=", "))
+  X <- counts_sxg[, smp, drop = FALSE]
 
-  # --- filter low-count genes ----------------------------------------------
-  keep_genes <- rowSums(X) >= min_row_sum
-  n_keep <- sum(keep_genes)
-  message("[DEBUG] Keeping ", n_keep, " / ", nrow(X), " genes with sum >= ", min_row_sum)
-  X <- X[keep_genes, , drop = FALSE]
+  # keep low-count filter
+  keep <- rowSums(X) >= min_row_sum
+  X <- X[keep, , drop = FALSE]
 
-  # --- prepare metadata -----------------------------------------------------
+  # convert safely to numeric without losing IDs
+  rn <- rownames(X)
+  X[] <- lapply(X, function(x) as.numeric(as.character(x)))
+  rownames(X) <- rn
+
+  # --- DESeq2 analysis ---
   meta_b$condition <- factor(meta_b$condition, levels = c("sensitive","tolerant"))
-  meta_b$batch <- make.names(meta_b$batch)  # safe factor levels
-  message("[DEBUG] batch levels: ", paste(levels(meta_b$batch), collapse = ", "))
-  message("[DEBUG] condition levels: ", paste(levels(meta_b$condition), collapse = ", "))
-
-  # --- build DESeq2 object --------------------------------------------------
-  message("[DEBUG] Creating DESeqDataSet...")
-  dds <- DESeqDataSetFromMatrix(countData = round(as.matrix(X)),
+  dds <- DESeqDataSetFromMatrix(countData = round(X),
                                 colData = meta_b,
                                 design = ~ condition)
-  message("[DEBUG] DESeqDataSet has ", nrow(dds), " genes and ", ncol(dds), " samples")
-
-  # --- run DESeq2 -----------------------------------------------------------
-  dds <- estimateSizeFactors(dds)
   dds <- DESeq(dds, quiet = TRUE)
-  message("[DEBUG] DESeq run complete")
 
-  # --- get coefficient names ------------------------------------------------
-  res_names <- resultsNames(dds)
-  message("[DEBUG] Available DESeq2 result names: ", paste(res_names, collapse = ", "))
-
-  # --- extract results for tolerant vs sensitive ----------------------------
-  res_name <- grep("^condition_.*tolerant.*", res_names, value = TRUE)
-  if (length(res_name) == 0) {
-    stop("[ERROR] Could not find condition coefficient in resultsNames(dds)")
-  }
-  message("[DEBUG] Using coefficient: ", res_name[1])
-
-  res <- results(dds, name = res_name[1])
-  message("[DEBUG] results() returned ", nrow(res), " rows")
-
-  # --- convert to data.frame, preserve gene IDs -----------------------------
-  out <- as.data.frame(res)
-  if (is.null(rownames(out))) {
-    stop("[ERROR] DESeq2 result lost rownames — cannot assign gene IDs.")
-  }
-  out <- tibble::rownames_to_column(out, var = "gene_id")
-
-  # --- diagnostics on gene IDs ---------------------------------------------
-  head_ids <- head(out$gene_id, 5)
-  message("[DEBUG] head(out$gene_id): ", paste(head_ids, collapse = ", "))
-  if (all(grepl("^[0-9]+$", head_ids))) {
-    warning("[WARN] gene_id values are numeric; likely lost actual IDs earlier.")
-  }
-
-  # --- select standardized columns -----------------------------------------
-  expected_cols <- c("gene_id", "log2FoldChange", "lfcSE", "pvalue", "padj", "baseMean")
-  missing_cols <- setdiff(expected_cols, colnames(out))
-  if (length(missing_cols) > 0) {
-    warning("[WARN] Missing columns: ", paste(missing_cols, collapse = ", "))
-    out <- out[, intersect(expected_cols, colnames(out)), drop = FALSE]
-  } else {
-    out <- out[, expected_cols, drop = FALSE]
-  }
-
-  # --- final checks ---------------------------------------------------------
-  message("[DEBUG] Returning ", nrow(out), " genes with expected columns.")
-  message("[DEBUG] Example output rows:")
-  print(head(out, 3))
-
+  res <- results(dds, name = "condition_tolerant_vs_sensitive")
+  out <- tibble::rownames_to_column(as.data.frame(res), var = "gene_id")
+  out <- out %>% select(gene_id, log2FoldChange, lfcSE, pvalue, padj, baseMean)
   attr(out, "batch_id") <- batch_id
-  message("[INFO] ==== Finished deseq_per_batch(", batch_id, ") ====\n")
-  return(out)
+  out
 }
 
 deseq_combined_block <- function(counts_sxg, meta_s, min_row_sum = 10L) {
-  message("[INFO] Running combined DESeq2 (block on batch)")
+  message("\n[INFO] ==== deseq_combined_block() ====")
 
-  # Combined DE across both training batches; block on batch
-  smp <- meta_s$sample
-  X   <- counts_sxg[, smp, drop = FALSE]
-  keep_genes <- rowSums(X) >= min_row_sum
-  X <- X[keep_genes, , drop = FALSE]
+  # --- prepare combined matrix with gene IDs ---
+  if ("gene_id" %in% colnames(counts_sxg)) {
+    rownames(counts_sxg) <- counts_sxg$gene_id
+    counts_sxg$gene_id <- NULL
+  }
 
-  meta_c <- meta_s
-  meta_c$condition <- factor(meta_c$condition, levels = c("sensitive","tolerant"))
-  meta_c$batch     <- factor(make.names(meta_c$batch))
-  stopifnot(!anyNA(meta_c$condition), !anyNA(meta_c$batch))
+  # filter low-count genes
+  keep <- rowSums(counts_sxg) >= min_row_sum
+  X <- counts_sxg[keep, , drop = FALSE]
 
-  dds <- DESeqDataSetFromMatrix(countData = round(as.matrix(X)),
-                                colData = meta_c,
+  # safe numeric coercion
+  rn <- rownames(X)
+  X[] <- lapply(X, function(x) as.numeric(as.character(x)))
+  rownames(X) <- rn
+
+  meta_s$condition <- factor(meta_s$condition, levels = c("sensitive","tolerant"))
+  meta_s$batch <- factor(make.names(meta_s$batch))
+
+  dds <- DESeqDataSetFromMatrix(countData = round(X),
+                                colData = meta_s,
                                 design = ~ batch + condition)
-  dds <- estimateSizeFactors(dds)
   dds <- DESeq(dds, quiet = TRUE)
 
-  message("[DEBUG] Available DESeq2 result names:")
-  print(resultsNames(dds))
-
-  # Safe retrieval of the condition coefficient
-  res_name <- grep("^condition_.*tolerant.*", resultsNames(dds), value = TRUE)
-  if (length(res_name) == 0) {
-    stop("Could not find coefficient for condition in combined model. Found: ",
-         paste(resultsNames(dds), collapse = ", "))
-  }
-  message("[DEBUG] Using coefficient: ", res_name[1])
-
-  res <- results(dds, name = res_name[1])
-
-  out <- as.data.frame(res)
-  if (!"gene_id" %in% colnames(out)) {
-    out$gene_id <- rownames(out)
-  }
-
-  # Verify expected columns exist before selecting
-  expected_cols <- c("gene_id","log2FoldChange","lfcSE","pvalue","padj","baseMean")
-  missing_cols <- setdiff(expected_cols, colnames(out))
-  if (length(missing_cols)) {
-    warning("[WARN] Missing columns in combined DESeq2 results: ",
-            paste(missing_cols, collapse=", "),
-            " — returning full table instead.")
-    return(out)
-  }
-
-  # Return selected columns, same as per-batch
-  out <- out %>% select(all_of(expected_cols))
-  return(out)
+  res <- results(dds, name = "condition_tolerant_vs_sensitive")
+  out <- tibble::rownames_to_column(as.data.frame(res), var = "gene_id")
+  out <- out %>% select(gene_id, log2FoldChange, lfcSE, pvalue, padj, baseMean)
+  out
 }
 
 
@@ -263,19 +156,16 @@ counts <- read_counts(opt$counts)
 if (!"gene_id" %in% names(counts))
   stop("Counts file must have 'gene_id' as first column")
 
-if (!exists("debug_mode")) debug_mode <- TRUE
-if (debug_mode) {
+if (FALSE) {
+  message("[DEBUG] Running in debug mode: downsampling genes to speed up testing")
   n_keep <- 1000  # choose e.g. 500–2000
   all_genes <- counts$gene_id
   keep <- sample(all_genes, n_keep)
   counts <- counts[counts$gene_id %in% keep, ]
-  message(sprintf("[DEBUG] Subsampled %d genes (out of %d)", n_keep, length(all_genes)))
 }
 
 rownames(counts) <- counts$gene_id
 counts$gene_id <- NULL
-print("head of counts after setting rownames:")
-print(head(counts))
 # Keep only training samples present in counts
 common_samp <- intersect(colnames(counts), meta$sample)
 if (length(common_samp) == 0)
@@ -288,8 +178,6 @@ meta   <- meta[match(common_samp, meta$sample), , drop = FALSE]
 rn <- rownames(counts)
 counts[] <- lapply(counts, function(x) as.numeric(as.character(x)))
 rownames(counts) <- rn
-print("head of counts after numeric conversion:")
-print(head(counts))
 
 # Verify
 stopifnot(all(is.finite(as.matrix(counts))))
@@ -319,20 +207,11 @@ if (file.exists(file.path(out_dir, "res_A.rds"))) {
   saveRDS(res_B, file=file.path(out_dir, "res_B.rds"))
   saveRDS(res_C, file=file.path(out_dir, "res_C.rds"))
 }
-message("head of res_A")
-print(head(res_A))
-message("head of res_B")
-print(head(res_B))
-
 
 # Harmonize universe to intersection of A and B
 genes_common <- intersect(res_A$gene_id, res_B$gene_id)
 A2 <- res_A %>% filter(gene_id %in% genes_common) %>% rename_with(~paste0(., ".A"), -gene_id)
 B2 <- res_B %>% filter(gene_id %in% genes_common) %>% rename_with(~paste0(., ".B"), -gene_id)
-message("head of A2")
-print(head(A2))
-message("head of B2")
-print(head(B2))
 
 # -------------------------------
 # Step 3: Meta-analysis (FE/RE) across A & B
@@ -341,8 +220,6 @@ print(head(B2))
 tmp2 <- A2 %>%
   inner_join(B2, by = "gene_id", suffix = c(".A", ".B")) %>%
   mutate(gene_id = as.character(gene_id))
-message("head of tmp2")
-print(head(tmp2))
 
 
 meta_df <- tmp2 %>%
@@ -377,19 +254,13 @@ meta_df <- tmp2 %>%
 stopifnot(is.character(meta_df$gene_id))
 message("[CHECK] meta_df gene_id example: ", paste(head(meta_df$gene_id, 5), collapse=", "))
 
-message("head of meta_df at 0")
-print(head(meta_df))
 meta_df <- as.data.frame(meta_df)
 meta_df$gene_id <- as.character(meta_df$gene_id)
-message("head of meta_df at 1")
-print(head(meta_df))
 
 
 # Join combined DE results "C" if available 
 if (!is.null(res_C)) {
   res_C <- as.data.frame(res_C)
-  message("[DEBUG] res_C columns: ", paste(colnames(res_C), collapse = ", "))
-
   if (all(c("gene_id","padj","log2FoldChange") %in% colnames(res_C))) {
     tmp <- res_C[, c("gene_id","padj","log2FoldChange"), drop = FALSE]
     names(tmp)[names(tmp) == "padj"] <- "padj_C"
@@ -412,11 +283,6 @@ if (!is.null(res_C)) {
   meta_df$log2FC_C <- NA_real_
   meta_df$same_sign_ABC <- NA
 }
-message("head of meta_df at 2")
-print(head(meta_df))
-
-
-
 
 I2_cut <- 30
 meta_df <- meta_df %>%
@@ -429,9 +295,10 @@ meta_df <- meta_df %>%
   ) %>%
   arrange(desc(score)) %>%
   mutate(meta_rank = row_number())
+# --- PATCH: multiple-testing adjustment of meta p-values ---
+meta_df <- meta_df %>%
+  mutate(q_meta = p.adjust(p_meta, method = "BH"))
 
-message("head of meta_df at 3")
-print(head(meta_df))
 
 write_csv(meta_df, file.path(out_dir, "meta_ranked.csv"))
 message("[INFO] Wrote meta_ranked.csv")
@@ -439,22 +306,34 @@ message("[INFO] Wrote meta_ranked.csv")
 # -------------------------------
 # Step 4: Tiering rules (unchanged logic)
 # -------------------------------
+min_abs_lfc <- 0.5   # effect-size floor
+I2_t1 <- 30
+I2_t2 <- 40
+
 tier_df <- meta_df %>%
   mutate(
     sig_A = padj_A < 0.05,
     sig_B = padj_B < 0.05,
     sig_C = ifelse(is.na(padj_C), FALSE, padj_C < 0.05),
     sign_ok_AB = same_sign_AB,
-    low_hetero = !is.na(I2) & I2 <= 30,
-    moderate_hetero = !is.na(I2) & I2 <= 50,
-    effect_large_C = ifelse(is.na(log2FC_C), FALSE, abs(log2FC_C) >= 1),
+    low_hetero = !is.na(I2) & I2 <= I2_t1,
+    moderate_hetero = !is.na(I2) & I2 <= I2_t2,
+    effect_ok_AB = abs(log2FC_A) >= min_abs_lfc & abs(log2FC_B) >= min_abs_lfc,
     expr_ok = ifelse(is.na(baseMean_A) | is.na(baseMean_B), TRUE,
                      pmax(baseMean_A, baseMean_B, na.rm = TRUE) > 10),
-    Tier = dplyr::case_when(
-      (sig_A & sig_B & sign_ok_AB & (sig_C | (p_meta < 0.01 & low_hetero))) ~ 1L,
-      (((sig_C & sign_ok_AB) |
-        (sig_A & sign_ok_AB) | (sig_B & sign_ok_AB)) & (p_meta < 0.05) & moderate_hetero) ~ 2L,
-      (sig_C & !sig_A & !sig_B & effect_large_C & expr_ok) ~ 3L,
+    Tier = case_when(
+      # Tier 1: both studies FDR<0.05, same sign, decent effect, low I², and meta q<0.05
+      (sig_A & sig_B & sign_ok_AB & effect_ok_AB &
+         q_meta < 0.05 & low_hetero & expr_ok) ~ 1L,
+
+      # Tier 2: one study significant, other nominal, same sign, meta q<0.10, moderate I²
+      (((sig_A & sign_ok_AB) | (sig_B & sign_ok_AB) | (sig_C & sign_ok_AB)) &
+         q_meta < 0.10 & moderate_hetero & effect_ok_AB & expr_ok) ~ 2L,
+
+      # Tier 3: C-only significant, large effect, adequate expression
+      (sig_C & !sig_A & !sig_B &
+         abs(log2FC_C) >= min_abs_lfc & expr_ok) ~ 3L,
+
       TRUE ~ NA_integer_
     )
   )
@@ -462,9 +341,11 @@ tier_df <- meta_df %>%
 write_csv(tier_df, file.path(out_dir, "tiers.csv"))
 message("[INFO] Wrote tiers.csv")
 
+topN <- 2000  # adjust as desiredtopN 
 tier12_genes <- tier_df %>%
   filter(Tier %in% c(1L,2L)) %>%
   arrange(Tier, meta_rank) %>%
+  slice_head(n = topN) %>%
   mutate(gene_id = as.character(gene_id)) %>%
   pull(gene_id)
 

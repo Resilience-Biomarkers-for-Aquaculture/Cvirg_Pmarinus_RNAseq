@@ -26,24 +26,20 @@ Outputs:
 
 import subprocess, json
 from pathlib import Path
+from sys import meta_path
 import pandas as pd
 
 # -------------------------------
 # Paths & configs
 # -------------------------------
-META_PATH = "../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled.csv"
+META_PATH = "../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled_with_study5H36.csv"
 COUNTS_PATH = "../../../data/rnaseq_gene_counts/merged_gene_counts.tsv"
 R_TIERING   = "run_tiering.R"           # your R script path
-PY_CLASSIFY = "train_eval.py"           # your classifier script path
+PY_CLASSIFY = "lasso_prune_onefold.py"           # your classifier script path
 OUTDIR      = Path("results")
 
 # Which batches to hold out
 BATCHES = ["P&S 2023", "P&S 2020 2015", "P&S 2020 2017"]
-BATCH_MAP = {
-    "P&S 2023": "A",
-    "P&S 2020 2015": "B1",
-    "P&S 2020 2017": "B2"
-}
 
 # Global seed for reproducibility
 GLOBAL_SEED = 12345
@@ -98,8 +94,6 @@ def main():
 
     # Load metadata to map samples → batch
     meta = pd.read_csv(META_PATH)
-    meta["batch"] = meta["batch"].map(lambda x: BATCH_MAP.get(x, x))
-    BATCHES = ["A", "B1", "B2"]
     meta.columns = [c.lower() for c in meta.columns]
     meta = meta.rename(columns={"sample": "sample", "batch": "batch"})
     meta = meta.set_index("sample")
@@ -119,13 +113,13 @@ def main():
         panel_file = run_r_tiering(train_samples, fold_dir, GLOBAL_SEED + i)
         # --- Diagnostics: summarize DESeq2 success per fold ---
     
-        meta_path = fold_dir / "meta_ranked.csv"
-        if meta_path.exists():
-            meta = pd.read_csv(meta_path)
-            n_total = meta.shape[0]
-            n_A = meta["padj_A"].notna().sum()
-            n_B = meta["padj_B"].notna().sum()
-            n_C = meta["padj_C"].notna().sum() if "padj_C" in meta.columns else 0
+        meta_ranked_path = fold_dir / "meta_ranked.csv"
+        if meta_ranked_path.exists():
+            meta_ranked = pd.read_csv(meta_ranked_path)
+            n_total = meta_ranked.shape[0]
+            n_A = meta_ranked["padj_A"].notna().sum()
+            n_B = meta_ranked["padj_B"].notna().sum()
+            n_C = meta_ranked["padj_C"].notna().sum() if "padj_C" in meta_ranked.columns else 0
             print(f"[DIAG] DESeq2 results per fold (genes): A={n_A}, B={n_B}, C={n_C}, total={n_total}")
         else:
             print(f"[WARN] meta_ranked.csv missing for fold {test_batch}")
