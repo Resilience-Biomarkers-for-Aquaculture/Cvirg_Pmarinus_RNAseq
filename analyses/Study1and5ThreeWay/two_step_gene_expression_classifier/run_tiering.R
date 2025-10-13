@@ -303,6 +303,57 @@ meta_df <- meta_df %>%
 write_csv(meta_df, file.path(out_dir, "meta_ranked.csv"))
 message("[INFO] Wrote meta_ranked.csv")
 
+
+# -----------------------------------------------
+# Optional: detect genes with significant batch×condition interaction
+# -----------------------------------------------
+drop_interaction <- character(0)
+
+# Run only if ≥2 batches present and both conditions represented in each
+batches_with_both <- tapply(meta$condition, meta$batch,
+                            function(x) length(unique(x)) >= 2)
+eligible_batches <- names(batches_with_both)[batches_with_both]
+
+if (length(eligible_batches) >= 2) {
+  message("[INFO] Performing LRT for batch×condition interaction on training set")
+
+  # Subset counts/metadata to training batches only
+  keep_samples <- meta$sample
+  count_mat <- as.matrix(counts[, keep_samples, drop = FALSE])
+  meta_sub <- meta
+
+  # Design with interaction
+  meta_sub$batch <- factor(make.names(meta_sub$batch))
+  meta_sub$condition <- factor(meta_sub$condition, levels = c("sensitive","tolerant"))
+
+  dds_full <- DESeqDataSetFromMatrix(
+    countData = round(count_mat),
+    colData   = meta_sub,
+    design    = ~ batch + condition + batch:condition
+  )
+
+  # Filter low counts
+  keep <- rowSums(counts(dds_full)) >= 10
+  dds_full <- dds_full[keep, ]
+
+  # Likelihood-ratio test comparing models with vs without the interaction term
+  dds_int <- DESeq(dds_full, test = "LRT",
+                   reduced = ~ batch + condition, quiet = TRUE)
+
+  res_int <- results(dds_int)
+  res_int <- as.data.frame(res_int)
+  res_int$gene_id <- rownames(res_int)
+
+  # Genes with significant interaction (condition effect differs by batch)
+  drop_interaction <- res_int$gene_id[which(res_int$pvalue < 0.05 & !is.na(res_int$pvalue))]
+
+  message(sprintf("[INFO] Identified %d genes with significant batch×condition interaction; will exclude from meta-analysis.",
+                  length(drop_interaction)))
+} else {
+  message("[INFO] Interaction LRT skipped (insufficient batches with both conditions).")
+}
+
+
 # -------------------------------
 # Step 4: Tiering rules (unchanged logic)
 # -------------------------------
@@ -311,6 +362,7 @@ I2_t1 <- 30
 I2_t2 <- 40
 
 tier_df <- meta_df %>%
+  filter(!(gene_id %in% drop_interaction)) %>%
   mutate(
     sig_A = padj_A < 0.05,
     sig_B = padj_B < 0.05,
@@ -337,6 +389,7 @@ tier_df <- meta_df %>%
       TRUE ~ NA_integer_
     )
   )
+
 
 write_csv(tier_df, file.path(out_dir, "tiers.csv"))
 message("[INFO] Wrote tiers.csv")
