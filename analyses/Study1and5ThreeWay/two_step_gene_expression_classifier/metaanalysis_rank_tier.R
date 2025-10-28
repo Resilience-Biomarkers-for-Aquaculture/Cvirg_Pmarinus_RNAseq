@@ -1,6 +1,12 @@
 #!/usr/bin/env Rscript
 
 # ===============================
+# OBSOLETE:
+# Note this was the first version of the meta-analysis + tiering code
+# developed for Study 1 & 5 gene expression classifiers. It did not hold out
+# folds for proper cross-validation, and has been superseded by run_tiering.R.
+# It used as input DESeq2 results from nf-core/differentialabundance,
+# whereas the current version does its own DESeq2 calls with proper fold-holdouts.
 # Purpose:
 #   Implements:
 #     Step (1) Harmonize universe via intersection of A and B post-filter genes
