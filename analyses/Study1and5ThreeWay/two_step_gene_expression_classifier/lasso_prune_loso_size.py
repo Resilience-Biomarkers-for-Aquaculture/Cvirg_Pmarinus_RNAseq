@@ -3,6 +3,11 @@
 # -*- coding: utf-8 -*-
 
 """
+OBSOLETE:
+Note this was originally the second script in the two-step gene
+expression classifier pipeline, and has been superseded by
+run_loso_pipeline.py (an orchestrator) and lasso_prune_onefold.py.py
+(the per-fold classifier).
 End-to-end classifier pipeline using:
   - nf-core/differentialabundance DESEQ2_NORM VST matrix (genes x samples)
   - Original metadata CSV (raw; cleaned inline)
