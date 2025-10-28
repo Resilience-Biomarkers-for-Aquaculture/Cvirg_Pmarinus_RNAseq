@@ -129,6 +129,9 @@ def main():
         print("[info] loso_coefficients_summary.csv not found; skipping sign stability.")
 
     # ---- Step 5: write outputs
+    # Set column order
+    weighted_df = weighted_df[["gene", "rank", "weighted_vote", "mean", "sd", "n_folds",
+                               "sign_pos_frac", "sign_neg_frac", "sign_zero_frac", "sign_stable"]]
     weighted_df.to_csv(args.output, index=False)
     print(f"[done] Wrote consensus ranking → {args.output}")
 

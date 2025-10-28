@@ -32,7 +32,7 @@ import pandas as pd
 # -------------------------------
 # Paths & configs
 # -------------------------------
-META_PATH = "../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled_with_study5H36.csv"
+META_PATH = "../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled_with_study5_alldays.csv"
 COUNTS_PATH = "../../../data/rnaseq_gene_counts/merged_gene_counts.tsv"
 R_TIERING   = "run_tiering.R"           # your R script path
 PY_CLASSIFY = "lasso_prune_onefold.py"           # your classifier script path
@@ -72,7 +72,7 @@ def run_r_tiering(train_samples, fold_dir, seed):
 def run_python_classifier(panel_file, fold_dir, seed, test_batch):
     """
     Run the Python classifier script.
-    Expects train_eval.py to take args: counts, meta, panel, outdir, seed, holdout_batch.
+    Expects classifier to take args: counts, meta, panel, outdir, seed, holdout_batch.
     """
     cmd = [
         "python", PY_CLASSIFY,
@@ -85,6 +85,7 @@ def run_python_classifier(panel_file, fold_dir, seed, test_batch):
     ]
     print("[INFO] Running Python classifier:", " ".join(cmd))
     subprocess.run(cmd, check=True)
+
 
 # -------------------------------
 # Main orchestrator

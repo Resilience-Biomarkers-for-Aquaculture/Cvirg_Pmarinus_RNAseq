@@ -7,12 +7,12 @@ if [ "$#" -lt 2 ]; then
 fi
 
 # Start with gene_ids from the first file
-cut -f1 "$1" | sort -u > tmp_common_ids
+cut -d, -f1 "$1" | sort -u > tmp_common_ids
 
 # Intersect with gene_ids from the remaining files
 shift
 for file in "$@"; do
-    cut -f1 "$file" | sort -u > tmp_ids
+    cut -d, -f1 "$file" | sort -u > tmp_ids
     comm -12 tmp_common_ids tmp_ids > tmp_common_new
     mv tmp_common_new tmp_common_ids
 done

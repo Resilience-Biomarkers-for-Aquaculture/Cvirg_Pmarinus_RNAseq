@@ -179,9 +179,88 @@ for m in TARGET_SIZES:
 df_metrics = pd.DataFrame(records)
 df_metrics.to_csv(outdir / f"panel_size_metrics_{args.holdout_batch}.csv", index=False)
 
+# ---------------------------------
+# Train final model on the best-performing panel size
+# ---------------------------------
+best = max(records, key=lambda r: r["auroc"])
+best_m = best["m"]
+best_genes = pd.read_csv(outdir / f"selected_genes_{args.holdout_batch}_m{best_m}.txt",
+                         header=None)[0].tolist()
+print(f"[INFO] Refitting final model on top {best_m} genes: {best_genes[:5]} ...")
+
+# Standardize train and test
+scaler = StandardScaler().fit(X_tr[best_genes])
+Xtr_z = scaler.transform(X_tr[best_genes])
+Xte_z = scaler.transform(X_te[best_genes])
+
+base = LogisticRegression(penalty=None, max_iter=5000, n_jobs=-1)
+clf = CalibratedClassifierCV(base, method="sigmoid", cv=min(5, max(2, int(min(np.bincount(y_tr))))))
+clf.fit(Xtr_z, y_tr)
+
+# ---------------------------------
+# Save coefficients and intercepts
+# ---------------------------------
+# Average calibrated models if multiple calibrators
+# ---------------------------------
+# Save coefficients and intercepts (version-safe)
+# ---------------------------------
+coef_list, intercept_list = [], []
+
+if hasattr(clf, "calibrated_classifiers_"):  # when calibration is used
+    for estimator in clf.calibrated_classifiers_:
+        base = getattr(estimator, "base_estimator", None) or getattr(estimator, "estimator", None)
+        if base is not None and hasattr(base, "coef_"):
+            coef_list.append(base.coef_.ravel())
+            intercept_list.append(float(base.intercept_[0]))
+elif hasattr(clf, "base_estimator_"):  # fallback for uncalibrated model
+    base = getattr(clf, "base_estimator_", clf)
+    coef_list.append(base.coef_.ravel())
+    intercept_list.append(float(base.intercept_[0]))
+elif hasattr(clf, "coef_"):
+    coef_list.append(clf.coef_.ravel())
+    intercept_list.append(float(clf.intercept_[0]))
+
+# Average across calibrated folds if applicable
+coefs = np.mean(np.vstack(coef_list), axis=0)
+intercept = float(np.mean(intercept_list))
+
+coef_df = pd.DataFrame({
+    "gene": best_genes,
+    "coef": coefs
+})
+coef_df.loc[len(coef_df)] = ["Intercept", intercept]
+coef_df.to_csv(outdir / f"coefficients_{args.holdout_batch}.csv", index=False)
+print(f"[INFO] Saved coefficients_{args.holdout_batch}.csv")
+
+
+# ---------------------------------
+# Save per-sample predictions
+# ---------------------------------
+probs = clf.predict_proba(Xte_z)[:, 1]
+preds_df = pd.DataFrame({
+    "sample": X_te.index,
+    "true_label": y_te,
+    "pred_prob_tolerant": probs
+})
+preds_df.to_csv(outdir / f"preds_{args.holdout_batch}.csv", index=False)
+print(f"[INFO] Saved preds_{args.holdout_batch}.csv")
+
+# ---------------------------------
+# Save JSON summary (final)
+# ---------------------------------
 # Save JSON summary
 best = max(records, key=lambda r: r["auroc"])
+best.update({
+    "best_m": best_m,
+    "n_genes": len(best_genes),
+    "coef_file": f"coefficients_{args.holdout_batch}.csv",
+    "preds_file": f"preds_{args.holdout_batch}.csv"
+})
 with open(outdir / f"best_panel_summary_{args.holdout_batch}.json", "w") as f:
     json.dump(best, f, indent=2)
+
+with open(outdir / f"best_panel_summary_{args.holdout_batch}.json", "w") as f:
+    json.dump(best, f, indent=2)
+print(f"[INFO] Final summary saved to best_panel_summary_{args.holdout_batch}.json")
 
 print(f"[INFO] Results saved to {outdir}")
