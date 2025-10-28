@@ -6,7 +6,7 @@
 #   2) Optional combined DE with blocking: design ~ batch + condition
 #   3) FE/RE meta-analysis across the two training batches
 #   4) Tiering rules (your original logic)
-#   5) Outputs: meta_ranked.csv, tiers.csv, panel_candidates_tier12.txt
+#   5) Outputs: meta_ranked.csv, tiers.csv
 # =============================================================
 
 suppressPackageStartupMessages({

@@ -100,7 +100,7 @@ def main():
     meta = meta.set_index("sample")
 
     for i, test_batch in enumerate(BATCHES, 1):
-        fold_dir = OUTDIR / f"loso_{test_batch}"
+        fold_dir = OUTDIR / f"loso_{test_batch.replace(' ', '_')}"
         fold_dir.mkdir(parents=True, exist_ok=True)
 
         # Partition train/test
