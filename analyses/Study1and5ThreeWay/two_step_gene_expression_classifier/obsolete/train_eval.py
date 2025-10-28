@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# OBSOLETE:
+# This is a precursor to lasso_prune_onefold.py
+# that didn't do stability selection and pruning.
 # train_eval.py
 # Train/evaluate classifier on panel for a single LOSO fold
 
@@ -43,6 +46,11 @@ X = counts[panel_genes]
 y = meta["condition"].map({"tolerant":1, "sensitive":0}).values
 batches = meta["batch"]
 
+print("[DEBUG] Unique batches in meta:", meta["batch"].unique())
+print("[DEBUG] Holdout batch name:", args.holdout_batch)
+print("[DEBUG] n_train:", (meta["batch"] != args.holdout_batch).sum(),
+      "n_test:", (meta["batch"] == args.holdout_batch).sum())
+
 # ---------------------------
 # Train/test split
 train_mask = batches != args.holdout_batch
@@ -68,6 +76,9 @@ joblib.dump(clf,    outdir / "model.joblib")
 
 # Save coefficients
 coef = pd.Series(clf.coef_.ravel(), index=panel_genes)
+# This DataFrame has:
+# One row per gene (feature)
+# One extra row labeled "INTERCEPT" with the model's bias term
 coef_df = pd.DataFrame({
     "feature": list(coef.index) + ["INTERCEPT"],
     "coefficient": list(coef.values) + [float(clf.intercept_[0])]
