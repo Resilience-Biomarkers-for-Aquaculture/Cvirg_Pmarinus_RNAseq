@@ -11,7 +11,7 @@ from sklearn.metrics import (
 from sklearn.calibration import calibration_curve
 
 
-BASE = Path("results")
+BASE = Path("results_25_Nov_2025")
 FOLDS = sorted(p for p in BASE.glob("loso_*") if p.is_dir())
 
 all_metrics = []

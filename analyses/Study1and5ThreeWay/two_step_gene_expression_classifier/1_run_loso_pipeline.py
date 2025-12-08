@@ -36,7 +36,7 @@ META_PATH = "../../../data/differential_abundance_sheets/rnaseq_diffabundance_st
 COUNTS_PATH = "../../../data/rnaseq_gene_counts/merged_gene_counts.tsv"
 R_TIERING   = "run_tiering.R"           # your R script path
 PY_CLASSIFY = "lasso_prune_onefold.py"           # your classifier script path
-OUTDIR      = Path("results")
+OUTDIR      = Path("results_25_Nov_2025")  # your LOSO root
 
 # Which batches to hold out
 BATCHES = ["P&S 2023", "P&S 2020 2015", "P&S 2020 2017"]

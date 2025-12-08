@@ -21,7 +21,7 @@ import pandas as pd
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--results_dir", default="results")
+    ap.add_argument("--results_dir", default="results_25_Nov_2025")
     ap.add_argument("--metric", choices=["auroc", "aupr"], default="auroc",
                     help="Fold weight for voting")
     ap.add_argument("--panel_size", type=int, default=None,
@@ -89,7 +89,7 @@ def main():
     for _, r in metrics_df.iterrows():
         fold = r["fold"]
         w = float(r["weight"])
-        gene_file = root / f"loso_{fold}" / f"selected_genes_{fold}_m{m}.txt"
+        gene_file = root / f"loso_{fold.replace(' ', '_')}" / f"selected_genes_{fold}_m{m}.txt"
         if not gene_file.exists():
             missing.append(str(gene_file))
             continue
@@ -132,7 +132,7 @@ def main():
     # Set column order
     weighted_df = weighted_df[["gene", "rank", "weighted_vote", "mean", "sd", "n_folds",
                                "sign_pos_frac", "sign_neg_frac", "sign_zero_frac", "sign_stable"]]
-    weighted_df.to_csv(args.output, index=False)
+    weighted_df.to_csv(Path(args.results_dir) / args.output, index=False)
     print(f"[done] Wrote consensus ranking → {args.output}")
 
     # ---- Step 6: optional quick plot
@@ -144,7 +144,7 @@ def main():
         plt.xlabel("Rank")
         plt.ylabel("Weighted vote (normalized)")
         plt.tight_layout()
-        png = Path(args.output).with_suffix(".png")
+        png = args.results_dir / Path(args.output).with_suffix(".png")
         plt.savefig(png, dpi=200)
         print(f"[done] Vote curve saved → {png}")
     except Exception as e:

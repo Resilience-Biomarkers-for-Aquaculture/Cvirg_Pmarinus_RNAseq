@@ -42,7 +42,7 @@ outdir.mkdir(parents=True, exist_ok=True)
 # ---------------------------
 # Load data
 # ---------------------------
-counts = pd.read_csv(args.counts, sep="\t", index_col=0).T  # samples x genes
+counts = pd.read_csv(args.counts, sep="\t", index_col=0).T
 meta = pd.read_csv(args.meta)
 meta.columns = [c.lower() for c in meta.columns]
 meta = meta.set_index("sample")
@@ -61,6 +61,41 @@ if not panel_genes:
 X_df = counts[panel_genes]
 y = meta["condition"].map({"tolerant": 1, "sensitive": 0}).values
 batch = meta["batch"].astype(str)
+
+if False:
+    # -------------------------------------------------------
+    # Optional: mean-center each batch to remove additive batch offsets
+    # -------------------------------------------------------
+    # Diagnostic: batch-wise means before centering
+    # Note this would only need to be done once, so really shouldn't be in
+    # per-fold script, but leaving here for convenience.
+    # E.g. could just run standalone:
+    # python lasso_prune_onefold.py \
+    # --counts=../../../data/rnaseq_gene_counts/merged_gene_counts.tsv \
+    # --meta=../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled_with_study5_alldays.csv \
+    # --panel=results/loso_P&S_2023/panel_candidates.txt \
+    # --outdir=results/loso_P&S_2023 --seed=12346 --holdout_batch=P&S 2023
+    orig_means = X_df.groupby(batch).mean()
+
+    # Apply per-batch centering
+    X_batch_centered = (
+        X_df.groupby(batch, group_keys=False)
+            .apply(lambda g: g - g.mean())
+    )
+
+    # Diagnostic: verify centering worked
+    centered_means = X_batch_centered.groupby(batch).mean()
+    diff = centered_means.abs().mean().mean()
+    print(f"[DEBUG] Avg abs post-centering batch mean: {diff:.4e}")
+    # Got:  Avg abs post-centering batch mean: 1.8866e-14
+
+    # Save diagnostics to do a PCA plot later if desired
+    orig_means.to_csv(outdir / f"batch_means_before_{args.holdout_batch}.csv")
+    centered_means.to_csv(outdir / f"batch_means_after_{args.holdout_batch}.csv")
+ 
+    # Optionally replace X_df with centered version for modeling
+    X_df = X_batch_centered.copy()
+    # -------------------------------------------------------
 
 train_mask = meta["batch"] != args.holdout_batch
 test_mask = ~train_mask
@@ -101,6 +136,8 @@ def stability_selection(X_df, y, batch, n_resamples=300, subsample_frac=0.7,
         scaler = StandardScaler().fit(X[tr])
         Xt = scaler.transform(X[tr])
         best_coef, best_nz = None, 10**9
+        """ This method selects the C that gives the sparsest model per resample
+        It produced too few selected features in practice.
         for C in C_grid:
             coef = fit_l1_logreg(Xt, y[tr], C=C, l1_ratio=l1_ratio,
                                  seed=rng.randint(1_000_000_000)).coef_.ravel()
@@ -108,6 +145,13 @@ def stability_selection(X_df, y, batch, n_resamples=300, subsample_frac=0.7,
             if len(nz) < best_nz:
                 best_nz = len(nz)
                 best_coef = coef
+        """
+        # Choose middle C instead (no searching for sparsest)
+        C = C_grid[len(C_grid)//2]
+        model = fit_l1_logreg(Xt, y[tr], C=C, l1_ratio=l1_ratio,
+                              seed=rng.randint(1_000_000_000))
+        best_coef = model.coef_.ravel()
+
         nz = np.flatnonzero(best_coef != 0)
         if len(nz):
             sel_counts.iloc[nz] += 1.0
@@ -164,6 +208,9 @@ records = []
 for m in TARGET_SIZES:
     topm = ordered_genes[:max(m*2, m)]
     pruned = redundancy_prune(X_tr, topm, corr_threshold=0.9)
+    # genes dropped = those in topm but not in pruned_keep
+    dropped = [g for g in topm if g not in pruned]
+  
     if len(pruned) > m:
         pruned = pruned[:m]
 

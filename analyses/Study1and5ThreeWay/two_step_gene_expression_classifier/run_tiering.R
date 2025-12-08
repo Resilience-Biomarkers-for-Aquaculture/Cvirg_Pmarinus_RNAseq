@@ -216,6 +216,12 @@ B2 <- res_B %>% filter(gene_id %in% genes_common) %>% rename_with(~paste0(., ".B
 # -------------------------------
 # Step 3: Meta-analysis (FE/RE) across A & B
 # -------------------------------
+#   - Compute FE and RE models per gene with metafor::rma.uni
+#   - Extract I^2 for heterogeneity; choose p_meta = FE if I^2≤I2_cut else RE
+#   - Add reproducibility score: -log10(p_meta) - λ*I^2 + small bonuses
+#   - Track sign-concordance across studies.
+# -------------------------------
+
 # A2 and B2 already exist and both have a character gene_id
 tmp2 <- A2 %>%
   inner_join(B2, by = "gene_id", suffix = c(".A", ".B")) %>%
