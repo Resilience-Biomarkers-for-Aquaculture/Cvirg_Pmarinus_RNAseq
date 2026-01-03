@@ -1,0 +1,13 @@
+{
+  "n_test": 35,
+  "auroc": 1.0,
+  "aupr": 1.0,
+  "brier": 0.10604696447672197,
+  "heldout": "P&S 2020 2015",
+  "m": 6,
+  "genes_kept": 6,
+  "best_m": 6,
+  "n_genes": 6,
+  "coef_file": "coefficients_P&S 2020 2015.csv",
+  "preds_file": "preds_P&S 2020 2015.csv"
+}
