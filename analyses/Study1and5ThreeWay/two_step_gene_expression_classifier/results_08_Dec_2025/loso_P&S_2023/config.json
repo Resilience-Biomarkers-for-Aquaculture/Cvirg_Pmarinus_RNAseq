@@ -1,0 +1,7 @@
+{
+  "fold": 1,
+  "holdout_batch": "P&S 2023",
+  "train_samples": 62,
+  "test_samples": 61,
+  "seed": 12346
+}

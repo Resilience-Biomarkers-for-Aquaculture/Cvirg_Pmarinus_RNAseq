@@ -1,0 +1,7 @@
+{
+  "fold": 3,
+  "holdout_batch": "P&S 2020 2017",
+  "train_samples": 96,
+  "test_samples": 27,
+  "seed": 12348
+}

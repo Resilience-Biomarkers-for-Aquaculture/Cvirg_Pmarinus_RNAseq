@@ -1,0 +1,13 @@
+{
+  "n_test": 61,
+  "auroc": 0.7075268817204301,
+  "aupr": 0.7340679447532813,
+  "brier": 0.2845217762056968,
+  "heldout": "P&S 2023",
+  "m": 6,
+  "genes_kept": 6,
+  "best_m": 6,
+  "n_genes": 6,
+  "coef_file": "coefficients_P&S 2023.csv",
+  "preds_file": "preds_P&S 2023.csv"
+}
