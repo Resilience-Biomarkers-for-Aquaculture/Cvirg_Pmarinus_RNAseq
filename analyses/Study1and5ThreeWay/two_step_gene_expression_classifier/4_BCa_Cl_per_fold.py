@@ -213,7 +213,7 @@ def bca_ci_fold_aware(y, p, folds, metric_name, B=10000, alpha=0.05, rng=np.rand
     return float(theta_hat), float(lo), float(hi)
 
 # ---------------- Main ----------------
-root = Path("results_25_Nov_2025")  # your LOSO root
+root = Path("results_08_Dec_2025")  # your LOSO root
 rows = []
 json_paths = sorted(str(p) for p in root.glob("loso_*/best_panel_summary_*.json"))
 

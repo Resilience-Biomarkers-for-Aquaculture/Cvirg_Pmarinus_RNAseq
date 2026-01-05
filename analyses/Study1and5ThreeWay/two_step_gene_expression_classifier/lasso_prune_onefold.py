@@ -123,7 +123,7 @@ def fit_l1_logreg(X, y, C=0.1, l1_ratio=None, seed=0):
     return clf
 
 def stability_selection(X_df, y, batch, n_resamples=300, subsample_frac=0.7,
-                        C_grid=(0.05, 0.1, 0.2), l1_ratio=None, random_state=123):
+                        C=0.5, l1_ratio=0.3, random_state=123):
     rng = np.random.RandomState(random_state)
     genes = X_df.columns.to_numpy()
     sel_counts = pd.Series(0.0, index=genes)
@@ -146,13 +146,12 @@ def stability_selection(X_df, y, batch, n_resamples=300, subsample_frac=0.7,
                 best_nz = len(nz)
                 best_coef = coef
         """
-        # Choose middle C instead (no searching for sparsest)
-        C = C_grid[len(C_grid)//2]
         model = fit_l1_logreg(Xt, y[tr], C=C, l1_ratio=l1_ratio,
                               seed=rng.randint(1_000_000_000))
         best_coef = model.coef_.ravel()
 
-        nz = np.flatnonzero(best_coef != 0)
+        # Soft selection rule: count non-negligible coefficients
+        nz = np.flatnonzero(best_coef > 1e-4)
         if len(nz):
             sel_counts.iloc[nz] += 1.0
             coef_sums.iloc[nz] += np.abs(best_coef[nz])

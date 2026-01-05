@@ -21,7 +21,7 @@ import pandas as pd
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--results_dir", default="results_25_Nov_2025")
+    ap.add_argument("--results_dir", default="results_08_Dec_2025")
     ap.add_argument("--metric", choices=["auroc", "aupr"], default="auroc",
                     help="Fold weight for voting")
     ap.add_argument("--panel_size", type=int, default=None,
