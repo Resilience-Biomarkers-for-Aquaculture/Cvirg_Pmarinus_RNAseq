@@ -1,3 +1,7 @@
+# This README is obsolete
+
+It refers to an earlier iteration of the pipeline.
+
 # Two-Step Gene Expression Classifier
 
 This directory contains scripts for conducting a two-step gene expression classifier analysis, primarily focused on panel gene selection. For further exploration, it includes a script for plotting gene counts for the identified panel genes, and a script for building a concrete classifier using those genes. The recommended workflow and dependencies between scripts are described below.
