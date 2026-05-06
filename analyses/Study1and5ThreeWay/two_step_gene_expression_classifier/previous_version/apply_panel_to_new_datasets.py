@@ -16,6 +16,12 @@ The 6-gene panel was selected using the pipeline in this directory
 evaluates how well those six genes generalise to three completely
 independent studies with different experimental designs and labs.
 
+*NOTE*: I believe the 6-gene panel was selected using only the single
+date samples from one study, causing sample-size bias. It would be useful
+to re-derive the 6-gene panel using code in this directory, but using
+multiple time point samples as was finally done in the later work in
+the parent directory.
+
 LOSO design
 -----------
 Because we have three independent test studies (A=Study 2, B=Study 3,
