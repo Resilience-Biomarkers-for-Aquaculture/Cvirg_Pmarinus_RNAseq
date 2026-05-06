@@ -1,6 +1,4 @@
-# This README is obsolete
-
-It refers to an earlier iteration of the pipeline.
+This README refers to an earlier iteration of the pipeline.
 
 # Two-Step Gene Expression Classifier
 
