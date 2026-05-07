@@ -4,7 +4,7 @@
 """
 apply_panel_to_new_datasets.py
 ==============================
-Leave-one-study-out (LOSO) evaluation of the 6-gene panel classifier
+Leave-one-study-out (LOSO) evaluation of a fixed gene panel classifier
 across the three independent datasets that were NOT used during panel
 selection (Studies 2, 3, and 4).
 
@@ -16,11 +16,9 @@ The 6-gene panel was selected using the pipeline in this directory
 evaluates how well those six genes generalise to three completely
 independent studies with different experimental designs and labs.
 
-*NOTE*: I believe the 6-gene panel was selected using only the single
-date samples from one study, causing sample-size bias. It would be useful
-to re-derive the 6-gene panel using code in this directory, but using
-multiple time point samples as was finally done in the later work in
-the parent directory.
+This script can also be run with alternative gene panels (e.g. the
+consensus panel derived from the parent-directory LOSO pipeline) by
+supplying a different --panel argument.
 
 LOSO design
 -----------
@@ -32,7 +30,7 @@ C=Study 4) we use leave-one-study-out cross-validation:
     Fold 3 : Train on (A + B)  →  Test on C  (Study 4 held out)
 
 In each fold, a fresh StandardScaler and logistic regression are fit on
-the two training studies using the fixed 6-gene panel, then applied to
+the two training studies using the fixed gene panel, then applied to
 the held-out study.
 
 Datasets
@@ -55,9 +53,9 @@ training samples that DO have both, log2(count+1) has Pearson r =
 0.93–0.97 with VST for each of the six panel genes, confirming the
 approximation is adequate.
 
-Outputs (written to apply_panel_results/ relative to this script)
-------------------------------------------------------------------
-  apply_panel_results/
+Outputs (written to --outdir, default apply_panel_results/)
+-----------------------------------------------------------
+  <outdir>/
     fold1_heldout_study2/
       predictions.csv         – per-sample probabilities + true labels
       metrics.json            – AUROC, AUPR, Brier for this fold
@@ -71,12 +69,28 @@ Outputs (written to apply_panel_results/ relative to this script)
 
 Usage
 -----
+  # Default: use the 6-gene panel (final_panel_gene_list.txt)
   python apply_panel_to_new_datasets.py
 
-No command-line arguments are needed; edit the USER-EDITABLE PATHS
-section below if your directory layout differs from the default.
+  # Alternate panel, explicit output directory
+  python apply_panel_to_new_datasets.py \\
+      --panel ../consensus_final_panel_gene_list.txt \\
+      --outdir apply_consensus_panel_results
+
+Command-line arguments
+----------------------
+  --panel PANEL_PATH
+      Path to a plain-text file listing gene IDs (one per line, no
+      header).  Resolved relative to this script's directory if not
+      absolute.  Default: ../final_panel_gene_list.txt
+
+  --outdir OUTDIR
+      Output directory for all results.  Resolved relative to this
+      script's directory if not absolute.  Created automatically if
+      it does not exist.  Default: apply_panel_results
 """
 
+import argparse
 import json
 from pathlib import Path
 
@@ -96,8 +110,7 @@ from sklearn.metrics import (
 )
 
 # ============================================================
-# USER-EDITABLE PATHS
-# Paths are relative to this script's location unless absolute.
+# FIXED PATHS  (not user-editable; derived from script location)
 # ============================================================
 
 # Directory containing this script
@@ -105,9 +118,6 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 
 # Root of the repository (four levels up from this script)
 REPO_ROOT = SCRIPT_DIR.parents[3]
-
-# 6-gene panel list (one gene ID per line, no header)
-PANEL_PATH = SCRIPT_DIR.parent / "final_panel_gene_list.txt"
 
 # Raw Salmon count matrices for the three test datasets
 # (genes × samples; first col = gene_id, second col = gene_name, dropped automatically)
@@ -121,11 +131,82 @@ META_DS2 = REPO_ROOT / "data/SraRunTable_study2.csv"
 META_DS3 = REPO_ROOT / "data/SraRunTable_study3.csv"
 META_DS4 = REPO_ROOT / "data/SraRunTable_study4.csv"
 
-# Output directory (created automatically if it doesn't exist)
-OUTDIR = SCRIPT_DIR / "apply_panel_results"
-
 # Logistic regression seed (for reproducibility)
 RANDOM_SEED = 12345
+
+
+# ============================================================
+# ARGUMENT PARSING
+# ============================================================
+
+def parse_args() -> argparse.Namespace:
+    """
+    Parse command-line arguments.
+
+    Returns
+    -------
+    argparse.Namespace
+        Parsed arguments with attributes:
+        - panel : Path  – gene list file (one gene ID per line)
+        - outdir : Path – output directory
+    """
+    parser = argparse.ArgumentParser(
+        description=(
+            "Leave-one-study-out (LOSO) evaluation of a fixed gene panel "
+            "across Studies 2, 3, and 4."
+        )
+    )
+    parser.add_argument(
+        "--panel",
+        type=str,
+        default=str(SCRIPT_DIR.parent / "final_panel_gene_list.txt"),
+        help=(
+            "Path to a plain-text file listing gene IDs, one per line, "
+            "no header.  Relative paths are resolved from this script's "
+            "directory.  Default: ../final_panel_gene_list.txt"
+        ),
+    )
+    parser.add_argument(
+        "--outdir",
+        type=str,
+        default=str(SCRIPT_DIR / "apply_panel_results"),
+        help=(
+            "Output directory for all results.  Relative paths are "
+            "resolved from this script's directory.  Created automatically "
+            "if it does not exist.  Default: apply_panel_results"
+        ),
+    )
+    args = parser.parse_args()
+
+    # Resolve paths relative to the script directory so the script can be
+    # called from any working directory
+    args.panel  = _resolve(args.panel)
+    args.outdir = _resolve(args.outdir)
+    return args
+
+
+def _resolve(path_str: str) -> Path:
+    """
+    Resolve a path string to an absolute Path.
+
+    If the path is already absolute it is returned unchanged; otherwise it
+    is resolved relative to SCRIPT_DIR so the script can be called from
+    any working directory.
+
+    Parameters
+    ----------
+    path_str : str
+        Raw path string from command-line argument.
+
+    Returns
+    -------
+    Path
+        Absolute Path object.
+    """
+    p = Path(path_str)
+    if not p.is_absolute():
+        p = (SCRIPT_DIR / p).resolve()
+    return p
 
 # ============================================================
 # HELPER FUNCTIONS
@@ -501,12 +582,24 @@ def plot_roc(
 
 def main():
     # -------------------------------------------------------
-    # 0. Output root
+    # 0. Parse arguments and set up output directory
     # -------------------------------------------------------
+    args   = parse_args()
+    PANEL_PATH = args.panel
+    OUTDIR     = args.outdir
+
+    if not PANEL_PATH.exists():
+        raise FileNotFoundError(
+            f"Panel gene list not found: {PANEL_PATH}\n"
+            "Pass --panel with the path to a plain-text file of gene IDs."
+        )
+
     OUTDIR.mkdir(parents=True, exist_ok=True)
+    print(f"[INFO] Panel file : {PANEL_PATH}")
+    print(f"[INFO] Output dir : {OUTDIR}")
 
     # -------------------------------------------------------
-    # 1. Load the fixed 6-gene panel
+    # 1. Load the fixed gene panel
     # -------------------------------------------------------
     panel_genes = (
         pd.read_csv(PANEL_PATH, header=None)[0]
@@ -550,8 +643,8 @@ def main():
     # 3. LOSO cross-validation across studies
     #
     #    For each held-out study, the other two serve as training data.
-    #    The 6-gene panel is FIXED; only the scaler and logistic
-    #    regression weights are re-estimated per fold.
+    #    The gene panel is FIXED; only the scaler and logistic regression
+    #    weights are re-estimated per fold.
     # -------------------------------------------------------
     all_keys   = list(datasets.keys())      # ["study2", "study3", "study4"]
     all_metrics = []
