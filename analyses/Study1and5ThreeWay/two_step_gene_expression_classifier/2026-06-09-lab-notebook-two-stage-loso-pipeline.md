@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "Lab notebook: 2-stage LOSO classifier pipeline (leakage-aware revision)"
+title: "2-stage LOSO classifier pipeline (leakage-aware revision)"
 date: 2026-06-09
 author: Steve Yost
 categories: [lab-notebook, rnaseq, machine-learning]
 ---
 
 ## Context
-This note documents how the 2-stage LOSO pipeline was designed and then revised to reduce leakage risk. It is based on:
+This note documents how the [2-stage LOSO pipeline](https://github.com/Resilience-Biomarkers-for-Aquaculture/Cvirg_Pmarinus_RNAseq/tree/main/analyses/Study1and5ThreeWay/two_step_gene_expression_classifier) was designed and then revised to reduce leakage risk. It is based on:
 
 1. `ChatGPT_Minimal_Biomarker_Longest_Gene_selection_strategy_commented.pdf` (main design thread),
 2. `ChatGPT_Minimal_Biomarker_Gene_classifier_explanation_2_commented.pdf` (summary + explicit risk/mitigation framing),
@@ -41,7 +41,7 @@ The old script:
 - ranked/pruned genes globally,
 - then performed LOSO evaluation.
 
-That means held-out groups influenced feature ranking before evaluation. Even with LOSO scoring later, this can inflate apparent generalization.
+That means held-out groups influenced feature ranking before evaluation. Even with LOSO scoring later, this leakage of training data influences gene ranks here.
 
 ### Current leakage-aware behavior
 The revised pipeline enforces fold isolation:
@@ -71,14 +71,9 @@ This converts the process from “global feature discovery + LOSO score” to **
 - Calibrated classifiers (`CalibratedClassifierCV`) are used for fold models.
 - `2_summarize_loso_results.py` consolidates fold metrics, coefficients, pooled predictions, ROC, and calibration plots.
 
-## Notes on differences vs older docs
-`previous_version/README.md` still describes the older single-script workflow (`lasso_prune_loso_size.py`). That documentation is historically useful, but the active pipeline is now the orchestrated per-fold workflow.
-
 ## Outcome
 The implementation now matches the key methodological intent from both transcripts:
 
 - retain reproducibility-first screening,
 - build small interpretable panels,
 - and evaluate generalization with stricter fold isolation to reduce leakage risk.
-
-If moved to the website repo, this file is ready to be placed under `_posts` (date-prefixed filename already provided).
