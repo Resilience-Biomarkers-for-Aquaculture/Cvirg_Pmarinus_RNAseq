@@ -52,7 +52,7 @@ The six-gene panel produced by this pipeline is stored in
 
 ### Part C – Stability evaluation of the classifier (optional)
 
-4. **Run `final_panel_classifier.py`** *(optional)*
+4. **Run `../final_panel_classifier.py`** *(optional)*
    - Trains the classifier over many random seeds on Studies 1 + 5 and reports
      coefficient stability.
    - **Primary output:**
