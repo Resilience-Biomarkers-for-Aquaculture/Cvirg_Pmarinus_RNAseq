@@ -3,8 +3,8 @@
   "n_samples": 10,
   "n_tolerant": 5,
   "n_sensitive": 5,
-  "auroc": 0.0,
-  "aupr": 0.3543650793650793,
-  "brier": 0.6023189100427288,
+  "auroc": 0.52,
+  "aupr": 0.5644444444444444,
+  "brier": 0.3265670331068562,
   "trained_on": "Study 2 (Louisiana field) + Study 4 (VIMS challenge)"
 }

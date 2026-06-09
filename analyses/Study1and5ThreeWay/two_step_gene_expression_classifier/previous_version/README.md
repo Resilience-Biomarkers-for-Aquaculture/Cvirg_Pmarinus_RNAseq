@@ -79,10 +79,11 @@ The six-gene panel produced by this pipeline is stored in
 
    - **Normalisation note:** The panel was originally selected using
      DESeq2 VST values, which are only available for datasets 1 and 5.
-     For this script all three datasets use log2(count + 1) for
-     consistency.  Across the 82 training samples that have both, the
-     Pearson correlation between log2(count+1) and VST is r = 0.93–0.97
-     for each panel gene.
+     For this script all three datasets first undergo simple
+     library-size normalisation (divide by sample-total size factors,
+     scaled to the median library size within each dataset), then
+     `log2(normalised_count + 1)` is applied consistently across all
+     three datasets.
 
    - **Outputs** (in `apply_panel_results/`):
      - `fold{1,2,3}_heldout_study{2,3,4}/predictions.csv`

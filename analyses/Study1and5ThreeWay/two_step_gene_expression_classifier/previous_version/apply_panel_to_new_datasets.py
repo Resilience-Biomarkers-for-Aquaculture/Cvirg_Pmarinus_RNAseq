@@ -46,12 +46,12 @@ Normalisation note
 ------------------
 The panel was selected using DESeq2 VST-normalised expression values
 (DESEQ2_NORM_all.vst.tsv), which is only available for datasets 1 and
-5.  Datasets 2–4 exist only as raw Salmon count matrices.  To keep
-training and test normalisation consistent within each LOSO fold, this
-script applies log2(count + 1) to all three datasets.  Across the 82
-training samples that DO have both, log2(count+1) has Pearson r =
-0.93–0.97 with VST for each of the six panel genes, confirming the
-approximation is adequate.
+5.  Datasets 2–4 exist only as Salmon count matrices.  To reduce
+sequencing-depth effects while keeping train/test preprocessing
+consistent within each LOSO fold, this script first applies a simple
+library-size normalisation (counts divided by sample-total size factors,
+scaled back to the median library size within each dataset), then takes
+log2(normalised_count + 1).
 
 Outputs (written to --outdir, default apply_panel_results/)
 -----------------------------------------------------------
@@ -238,16 +238,46 @@ def load_counts(path: Path) -> pd.DataFrame:
     return df
 
 
+def normalize_library_size(counts: pd.DataFrame) -> pd.DataFrame:
+    """
+    Normalize each sample by its library size.
+
+    Each sample column is divided by a simple size factor equal to its
+    total count divided by the median total count across samples in the
+    same dataset.  This preserves the overall count scale while removing
+    depth-driven differences between samples before the log transform.
+
+    Parameters
+    ----------
+    counts : pd.DataFrame
+        Raw count matrix (genes × samples).
+
+    Returns
+    -------
+    pd.DataFrame
+        Library-size-normalized matrix with the same shape and index.
+    """
+    library_sizes = counts.sum(axis=0)
+    bad_samples = library_sizes[library_sizes <= 0].index.tolist()
+    if bad_samples:
+        raise ValueError(
+            "Samples with non-positive library size cannot be normalized: "
+            f"{bad_samples}"
+        )
+
+    median_library_size = float(np.median(library_sizes.values))
+    size_factors = library_sizes / median_library_size
+    return counts.divide(size_factors, axis=1)
+
+
 def log2_plus1(counts: pd.DataFrame) -> pd.DataFrame:
     """
     Apply log2(count + 1) transformation element-wise.
 
-    This variance-stabilising pseudo-log transform is used in place of
-    DESeq2 VST because VST is only available for the training datasets
-    (1 and 5) and not for 2, 3, or 4.  Across the 82 training samples
-    that have both, log2(count+1) has Pearson r = 0.93–0.97 with VST
-    for each of the six panel genes, confirming the approximation is
-    adequate.
+    This variance-stabilising pseudo-log transform is applied after
+    simple library-size normalization because DESeq2 VST is only
+    available for the training datasets (1 and 5) and not for 2, 3,
+    or 4.
 
     Parameters
     ----------
@@ -320,7 +350,8 @@ def align_and_subset(
     Parameters
     ----------
     expr_log : pd.DataFrame
-        log2(count+1) expression matrix, shape (n_genes, n_samples).
+        Library-size-normalized, log2-transformed expression matrix,
+        shape (n_genes, n_samples).
     meta : pd.DataFrame
         Metadata indexed by sample ID.
     panel_genes : list
@@ -624,7 +655,8 @@ def main():
     for counts_path, meta_path, key, label in dataset_specs:
         print(f"\n[INFO] Loading {label} …")
         counts_raw = load_counts(counts_path)
-        counts_log = log2_plus1(counts_raw)
+        counts_norm = normalize_library_size(counts_raw)
+        counts_log = log2_plus1(counts_norm)
         meta       = load_sra_metadata(meta_path, label)
         X, meta_al = align_and_subset(counts_log, meta, panel_genes, label)
 

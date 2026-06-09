@@ -3,8 +3,8 @@
   "n_samples": 40,
   "n_tolerant": 24,
   "n_sensitive": 16,
-  "auroc": 0.42447916666666663,
-  "aupr": 0.5507869239858167,
-  "brier": 0.4612643840465659,
+  "auroc": 0.4973958333333333,
+  "aupr": 0.5759525182668193,
+  "brier": 0.47826967445446655,
   "trained_on": "Study 3 (Dermo challenge) + Study 4 (VIMS challenge)"
 }

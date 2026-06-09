@@ -3,8 +3,8 @@
   "n_samples": 44,
   "n_tolerant": 30,
   "n_sensitive": 14,
-  "auroc": 0.5095238095238095,
-  "aupr": 0.7642742495623767,
-  "brier": 0.2892728923134819,
+  "auroc": 0.49047619047619045,
+  "aupr": 0.7447781881552371,
+  "brier": 0.29940426101830103,
   "trained_on": "Study 2 (Louisiana field) + Study 3 (Dermo challenge)"
 }
