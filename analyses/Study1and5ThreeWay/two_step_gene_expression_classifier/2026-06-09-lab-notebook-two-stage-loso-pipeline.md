@@ -41,7 +41,7 @@ The old script:
 - ranked/pruned genes globally,
 - then performed LOSO evaluation.
 
-That means held-out groups influenced feature ranking before evaluation. Even with LOSO scoring later, this leakage of training data influences gene ranks here.
+That means held-out groups influenced feature ranking before evaluation. Even with LOSO scoring later, this leakage of held-out (test) data into feature ranking can make performance estimates optimistic.
 
 ### Current leakage-aware behavior
 The revised pipeline enforces fold isolation:
