@@ -5,6 +5,6 @@
   "n_sensitive": 5,
   "auroc": 0.0,
   "aupr": 0.3543650793650793,
-  "brier": 0.6023189100338538,
+  "brier": 0.6023189100427288,
   "trained_on": "Study 2 (Louisiana field) + Study 4 (VIMS challenge)"
 }

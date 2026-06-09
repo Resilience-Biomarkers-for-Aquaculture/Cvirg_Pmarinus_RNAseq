@@ -5,6 +5,6 @@
   "n_sensitive": 14,
   "auroc": 0.5095238095238095,
   "aupr": 0.7642742495623767,
-  "brier": 0.28927289228375996,
+  "brier": 0.2892728923134819,
   "trained_on": "Study 2 (Louisiana field) + Study 3 (Dermo challenge)"
 }

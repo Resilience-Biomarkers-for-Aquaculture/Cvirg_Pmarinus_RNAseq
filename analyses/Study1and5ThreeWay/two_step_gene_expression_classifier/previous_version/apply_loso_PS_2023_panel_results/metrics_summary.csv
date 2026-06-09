@@ -1,4 +1,4 @@
 heldout_study,trained_on,n_samples,n_tolerant,n_sensitive,auroc,aupr,brier
-Study 2 (Louisiana field),Study 3 (Dermo challenge) + Study 4 (VIMS challenge),40,24,16,0.38020833333333337,0.5192375756796574,0.3829320870845632
-Study 3 (Dermo challenge),Study 2 (Louisiana field) + Study 4 (VIMS challenge),10,5,5,0.07999999999999999,0.3705555555555555,0.43619100622237295
-Study 4 (VIMS challenge),Study 2 (Louisiana field) + Study 3 (Dermo challenge),44,30,14,0.45952380952380956,0.6726015112569479,0.5381625784173086
+Study 2 (Louisiana field),Study 3 (Dermo challenge) + Study 4 (VIMS challenge),40,24,16,0.38020833333333337,0.5192375756796574,0.3829320896396734
+Study 3 (Dermo challenge),Study 2 (Louisiana field) + Study 4 (VIMS challenge),10,5,5,0.07999999999999999,0.3705555555555555,0.4361910062237877
+Study 4 (VIMS challenge),Study 2 (Louisiana field) + Study 3 (Dermo challenge),44,30,14,0.45952380952380956,0.6726015112569479,0.5381625784839397
