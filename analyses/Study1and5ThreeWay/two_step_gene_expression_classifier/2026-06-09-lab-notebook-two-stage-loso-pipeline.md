@@ -19,7 +19,7 @@ Primary goal: a **small, reproducible gene panel** and an auditable classifier t
 ## What the initial design proposed
 From the main transcript, the intended architecture was:
 
-- **Stage 1 (R):** cross-study ranking/tiering using FE/RE meta-analysis, heterogeneity (`I^2`), sign consistency, and tier rules.
+- **Stage 1 (R):** cross-study ranking/tiering using FE/RE meta-analysis, heterogeneity (`I²`), sign consistency, and tier rules.
 - **Stage 2 (Python):** stability selection + redundancy pruning + panel-size sweep + LOSO evaluation.
 - select the smallest panel size within `ΔAUROC <= 0.02` of the best-performing size.
 
@@ -59,7 +59,7 @@ This converts the process from “global feature discovery + LOSO score” to **
 - Tiering and feature ranking are no longer run once on all samples.
 
 ### 2) Cross-domain reproducibility emphasis
-- `run_tiering.R` computes FE/RE meta quantities and heterogeneity (`I^2`), then tier assignments using sign and significance rules.
+- `run_tiering.R` computes FE/RE meta quantities and heterogeneity (`I²`), then tier assignments using sign and significance rules.
 - Tier 1/2 outputs constrain candidate features passed to modeling (`panel_candidates.txt`).
 
 ### 3) Minimal-panel selection discipline
