@@ -116,8 +116,8 @@ The six-gene panel produced by this pipeline is stored in
 | `lasso_prune_loso_size.py` | LASSO stability selection + LOSO panel size sweep |
 | `../final_panel_gene_list.txt` | Output: the final 6-gene panel (parent dir) |
 | `combine_panel_candidates.py` | Utility: aggregate panel candidate lists across folds |
-| `plot_final_panel.py` | Optional visualisation of panel gene expression |
-| `final_panel_classifier.py` | Optional repeated-seed evaluation of the classifier |
+| `../plot_final_panel.py` | Optional visualisation of panel gene expression |
+| `../final_panel_classifier.py` | Optional repeated-seed evaluation of the classifier |
 | `train_eval.py` | *Obsolete* – precursor to `lasso_prune_onefold.py` |
 | `apply_panel_to_new_datasets.py` | **Apply 6-gene panel to Studies 2, 3, 4 (LOSO)** |
 | `apply_panel_results/` | Output directory created by `apply_panel_to_new_datasets.py` |
