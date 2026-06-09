@@ -41,7 +41,7 @@ The six-gene panel produced by this pipeline is stored in
 
 ### Part B – Visualise the panel (optional)
 
-3. **Run `plot_final_panel.py`** *(optional)*
+3. **Run `../plot_final_panel.py`** *(optional)*
    - Visualises VST expression of the panel genes across all training samples,
      stratified by condition and batch.
    - **Outputs** (in `plots/`):
