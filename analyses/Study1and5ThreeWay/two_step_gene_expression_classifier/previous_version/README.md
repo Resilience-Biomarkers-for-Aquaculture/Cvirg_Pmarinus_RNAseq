@@ -102,8 +102,8 @@ The six-gene panel produced by this pipeline is stored in
      cd analyses/Study1and5ThreeWay/two_step_gene_expression_classifier/previous_version
      python apply_panel_to_new_datasets.py
      ```
-     No arguments needed.  Edit the `USER-EDITABLE PATHS` section at the
-     top of the script if your repo layout differs.
+      Optional arguments are available; see `python apply_panel_to_new_datasets.py --help`.
+      Use `--panel` to supply an alternative gene list and `--outdir` to change the output directory.
 
 ---
 
