@@ -375,10 +375,10 @@ def fit_classifier(X_train: pd.DataFrame, y_train: np.ndarray):
     """
     Fit a StandardScaler and an unpenalised logistic regression classifier.
 
-    The unpenalised model (C=1e9 ≈ no regularisation, equivalent to the
-    deprecated penalty=None) mirrors the approach in final_panel_classifier.py.
-    With only 6 features the model is well-determined without regularisation,
-    and class_weight='balanced' accounts for any class imbalance.
+    The unpenalised model (penalty=None) mirrors the approach used in
+    ../final_panel_classifier.py and train_eval.py. With only 6 features the model
+    is well-determined without regularisation, and class_weight='balanced' accounts
+    for any class imbalance.
 
     Parameters
     ----------
