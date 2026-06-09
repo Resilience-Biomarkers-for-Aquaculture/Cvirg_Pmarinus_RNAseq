@@ -55,7 +55,8 @@ This converts the process from “global feature discovery + LOSO score” to **
 
 ## Implemented risk mitigations (from transcript to code)
 ### 1) Leakage control
-- Implemented via fold-specific training sample lists (`train_samples.txt`) and per-fold outputs in `results_08_Dec_2025/loso_*` (this Dec-2025 directory name is intentional and reflects when that analysis run was produced, even though this notebook write-up is dated 2026-06-09).
+- Implemented via fold-specific training sample lists (`train_samples.txt`) and per-fold outputs in `results_08_Dec_2025/loso_*`.
+- The Dec-2025 directory name is intentional and reflects when that analysis run was produced, even though this notebook write-up is dated 2026-06-09.
 - Tiering and feature ranking are no longer run once on all samples.
 
 ### 2) Cross-domain reproducibility emphasis
