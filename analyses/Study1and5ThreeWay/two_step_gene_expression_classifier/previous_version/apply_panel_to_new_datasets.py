@@ -355,6 +355,9 @@ def align_and_subset(
             f"in counts; {n_expr_only} in counts but not in metadata – both dropped."
         )
 
+    missing_genes = [g for g in panel_genes if g not in expr_t.columns]
+    if missing_genes:
+        raise ValueError(f"{dataset_label}: panel genes missing in expression matrix: {missing_genes}")
     X    = expr_t.loc[common, panel_genes]
     meta = meta.loc[common]
     print(
