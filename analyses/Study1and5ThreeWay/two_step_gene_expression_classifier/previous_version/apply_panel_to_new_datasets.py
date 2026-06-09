@@ -397,13 +397,12 @@ def fit_classifier(X_train: pd.DataFrame, y_train: np.ndarray):
     scaler = StandardScaler().fit(X_train.values)
     Xz = scaler.transform(X_train.values)
     clf = LogisticRegression(
-        C=1e9,                 # Inverse regularisation strength: C=1e9 ≈ no
-                               # regularisation (same behaviour as the deprecated
-                               # penalty=None, but uses the current API)
+        penalty=None,
         solver="lbfgs",
         max_iter=5000,
         class_weight="balanced",   # compensates for class imbalance
         random_state=RANDOM_SEED,
+        n_jobs=-1,
     ).fit(Xz, y_train)
     return scaler, clf
 
