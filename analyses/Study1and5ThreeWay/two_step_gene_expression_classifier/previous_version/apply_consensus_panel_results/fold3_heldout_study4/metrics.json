@@ -1,0 +1,10 @@
+{
+  "heldout_study": "Study 4 (VIMS challenge)",
+  "n_samples": 44,
+  "n_tolerant": 30,
+  "n_sensitive": 14,
+  "auroc": 0.3738095238095238,
+  "aupr": 0.6542721880916615,
+  "brier": 0.6151519829083363,
+  "trained_on": "Study 2 (Louisiana field) + Study 3 (Dermo challenge)"
+}
