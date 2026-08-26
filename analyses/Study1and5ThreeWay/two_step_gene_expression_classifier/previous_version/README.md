@@ -26,6 +26,7 @@ The six-gene panel produced by this pipeline is stored in
 1. **Run `metaanalysis_rank_tier.R` first**
    - This R script performs a meta-analysis using I² and meta-p and ranks gene
      candidates into tiers.
+   - See this[flow diagram](https://github.com/Resilience-Biomarkers-for-Aquaculture/Cvirg_Pmarinus_RNAseq/blob/main/analyses/Study1and5ThreeWay/two_step_gene_expression_classifier/previous_version/metaanalysis_rank_tier_diagram.svg)
    - **Primary output:** `panel_candidates_tier12.txt`
      - Lists candidate genes from tiers 1 and 2.
      - **Note:** Its use in the next step is optional; `lasso_prune_loso_size.py`
