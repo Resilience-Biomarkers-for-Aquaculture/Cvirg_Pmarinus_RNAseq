@@ -30,9 +30,9 @@ suppressPackageStartupMessages({
 # [User-editable paths]
 #   Replace with your actual files from nf-core/differentialabundance exports.
 # -------------------------------
-A_path <- "../Study1_D7_treatment_resistant_sensitive.deseq2.results.tsv"   # Study A DE table
-B_path <- "../Study5_D7_treatment_resistant_sensitive.deseq2.results.tsv"   # Study B DE table
-C_path <- "../Issue44_study1and5_D7_treatment_resistant_sensitive_block.deseq2.results.tsv"   # Combined A+B DE table (optional for bonuses/tiering)
+A_path <- "../../Study1_D7_treatment_resistant_sensitive.deseq2.results.tsv"   # Study A DE table
+B_path <- "../../Study5_D7_treatment_resistant_sensitive.deseq2.results.tsv"   # Study B DE table
+C_path <- "../../OMIT_Issue44_study1and5_D7_treatment_resistant_sensitive_block.deseq2.results.tsv"   # Combined A+B DE table (optional for bonuses/tiering)
 
 # -------------------------------
 # [Step 1] Load results & define common universe (A ∩ B)

@@ -24,9 +24,9 @@ Outputs:
     loso_B2/...
 """
 
-import subprocess, json
+import json
+import subprocess
 from pathlib import Path
-from sys import meta_path
 import pandas as pd
 
 # -------------------------------
@@ -69,6 +69,7 @@ def run_r_tiering(train_samples, fold_dir, seed):
     subprocess.run(cmd, check=True)
     return panel_out
 
+
 def run_python_classifier(panel_file, fold_dir, seed, test_batch):
     """
     Run the Python classifier script.
@@ -96,7 +97,6 @@ def main():
     # Load metadata to map samples → batch
     meta = pd.read_csv(META_PATH)
     meta.columns = [c.lower() for c in meta.columns]
-    meta = meta.rename(columns={"sample": "sample", "batch": "batch"})
     meta = meta.set_index("sample")
 
     for i, test_batch in enumerate(BATCHES, 1):
@@ -113,7 +113,7 @@ def main():
         # Run tiering on training only
         panel_file = run_r_tiering(train_samples, fold_dir, GLOBAL_SEED + i)
         # --- Diagnostics: summarize DESeq2 success per fold ---
-    
+
         meta_ranked_path = fold_dir / "meta_ranked.csv"
         if meta_ranked_path.exists():
             meta_ranked = pd.read_csv(meta_ranked_path)
@@ -141,6 +141,7 @@ def main():
             json.dump(cfg, f, indent=2)
 
     print("\n[INFO] All LOSO folds completed. Results in:", OUTDIR)
+
 
 if __name__ == "__main__":
     main()

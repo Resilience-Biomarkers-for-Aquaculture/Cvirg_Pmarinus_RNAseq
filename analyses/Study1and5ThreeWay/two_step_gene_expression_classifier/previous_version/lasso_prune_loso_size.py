@@ -36,8 +36,8 @@ from sklearn.calibration import CalibratedClassifierCV
 # -------------------------------
 # User-editable paths for input data
 # -------------------------------
-VST_PATH = "DESEQ2_NORM_all.vst.tsv"  # nf-core DESEQ2_NORM VST matrix (genes x samples; first col = gene_id)
-META_PATH = "../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled.csv"
+VST_PATH = "../DESEQ2_NORM_all.vst.tsv"  # nf-core DESEQ2_NORM VST matrix (genes x samples; first col = gene_id)
+META_PATH = "../../../../data/differential_abundance_sheets/rnaseq_diffabundance_study1and5_samplesheet_filled.csv"
 GENE_LIST_PATH = "panel_candidates_tier12.txt"
 
 # Optional: remap free-form batch labels to abstract groups (A,B1,B2) for LOGO clarity
