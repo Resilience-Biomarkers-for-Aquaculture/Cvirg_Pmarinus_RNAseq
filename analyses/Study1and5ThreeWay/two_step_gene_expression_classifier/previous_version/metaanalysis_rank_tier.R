@@ -141,7 +141,8 @@ if (!is.null(C)) {
 I2_cut <- 30  # Step 2 threshold; tune if desired
 meta_df <- meta_df %>%
   mutate(
-    p_meta = ifelse(!is.na(I2) & I2 <= I2_cut, p_fe, p_re),
+    p_meta     = ifelse(!is.na(I2) & I2 <= I2_cut, p_fe, p_re),
+    model_used = ifelse(!is.na(I2) & I2 <= I2_cut, "FE", "RE"),
     lambda = 0.02,  # heterogeneity penalty weight proposed
     bonus_triplicate = ifelse(!is.na(padj_C) & padj_A < 0.05 & padj_B < 0.05 & padj_C < 0.05, 0.3, 0.0),
     bonus_signmatch = ifelse(isTRUE(same_sign_ABC), 0.2, 0.0),
