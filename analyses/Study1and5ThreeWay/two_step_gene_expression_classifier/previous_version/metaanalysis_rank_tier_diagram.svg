@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1500" viewBox="0 0 900 1500">
+  <style>
+    .box { fill:white; stroke:#222; stroke-width:2; rx:10; }
+    .text { font-family:Arial,sans-serif; font-size:18px; text-anchor:middle; }
+    .small { font-family:Arial,sans-serif; font-size:15px; text-anchor:middle; }
+    .title { font-family:Arial,sans-serif; font-size:26px; font-weight:bold; text-anchor:middle; }
+    .arrow { stroke:#222; stroke-width:2; fill:none; marker-end:url(#arrow); }
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10"
+            refX="9" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <text x="450" y="40" class="title">
+    Meta-analysis / Tiering Statistical Flow
+  </text>
+
+  <!-- Studies -->
+  <rect x="100" y="80" width="250" height="90" class="box"/>
+  <text x="225" y="112" class="text">STUDY A</text>
+  <text x="225" y="140" class="small">log2FC + SE</text>
+  <text x="225" y="160" class="small">p / padj</text>
+
+  <rect x="550" y="80" width="250" height="90" class="box"/>
+  <text x="675" y="112" class="text">STUDY B</text>
+  <text x="675" y="140" class="small">log2FC + SE</text>
+  <text x="675" y="160" class="small">p / padj</text>
+
+  <!-- Meta -->
+  <rect x="300" y="220" width="300" height="65" class="box"/>
+  <text x="450" y="260" class="text">META-ANALYSIS</text>
+
+  <path d="M225 170 L350 220" class="arrow"/>
+  <path d="M675 170 L550 220" class="arrow"/>
+
+  <!-- FE / RE -->
+  <rect x="160" y="335" width="230" height="65" class="box"/>
+  <text x="275" y="375" class="text">FE model</text>
+
+  <rect x="510" y="335" width="230" height="65" class="box"/>
+  <text x="625" y="375" class="text">RE model</text>
+
+  <path d="M380 285 L275 335" class="arrow"/>
+  <path d="M520 285 L625 335" class="arrow"/>
+
+  <!-- I2 -->
+  <rect x="300" y="450" width="300" height="70" class="box"/>
+  <text x="450" y="480" class="text">I²</text>
+  <text x="450" y="505" class="small">heterogeneity</text>
+
+  <path d="M275 400 L400 450" class="arrow"/>
+  <path d="M625 400 L500 450" class="arrow"/>
+
+  <!-- p values -->
+  <rect x="90" y="570" width="220" height="65" class="box"/>
+  <text x="200" y="610" class="text">p_FE</text>
+
+  <rect x="590" y="570" width="220" height="65" class="box"/>
+  <text x="700" y="610" class="text">p_RE</text>
+
+  <path d="M400 520 L200 570" class="arrow"/>
+  <path d="M500 520 L700 570" class="arrow"/>
+
+  <text x="260" y="550" class="small">I² ≤ 30%</text>
+  <text x="640" y="550" class="small">I² &gt; 30%</text>
+
+  <!-- pmeta -->
+  <rect x="325" y="680" width="250" height="65" class="box"/>
+  <text x="450" y="720" class="text">p_meta</text>
+
+  <path d="M200 635 L380 680" class="arrow"/>
+  <path d="M700 635 L520 680" class="arrow"/>
+
+  <!-- score components -->
+  <rect x="100" y="800" width="250" height="70" class="box"/>
+  <text x="225" y="830" class="text">−log10(p_meta)</text>
+
+  <rect x="550" y="800" width="250" height="70" class="box"/>
+  <text x="675" y="830" class="text">− λ × I²</text>
+  <text x="675" y="855" class="small">explicit heterogeneity penalty</text>
+
+  <path d="M400 745 L225 800" class="arrow"/>
+  <path d="M450 520 L675 800" class="arrow"/>
+
+  <!-- score -->
+  <rect x="250" y="925" width="400" height="85" class="box"/>
+  <text x="450" y="955" class="text">REPRODUCIBILITY SCORE</text>
+  <text x="450" y="985" class="small">−log10(p_meta) − λI²</text>
+
+  <path d="M225 870 L350 925" class="arrow"/>
+  <path d="M675 870 L550 925" class="arrow"/>
+
+  <!-- rank -->
+  <rect x="325" y="1050" width="250" height="65" class="box"/>
+  <text x="450" y="1090" class="text">META RANK</text>
+  <path d="M450 1010 L450 1050" class="arrow"/>
+
+  <!-- tier inputs -->
+  <rect x="80" y="1170" width="260" height="75" class="box"/>
+  <text x="210" y="1200" class="text">Study-level FDR</text>
+  <text x="210" y="1225" class="small">A / B / C</text>
+
+  <rect x="560" y="1170" width="260" height="75" class="box"/>
+  <text x="690" y="1200" class="text">Directional</text>
+  <text x="690" y="1225" class="small">concordance</text>
+
+  <!-- tier rules -->
+  <rect x="300" y="1280" width="300" height="65" class="box"/>
+  <text x="450" y="1320" class="text">TIERING RULES</text>
+
+  <path d="M210 1245 L370 1280" class="arrow"/>
+  <path d="M690 1245 L530 1280" class="arrow"/>
+  <path d="M450 1115 L450 1280" class="arrow"/>
+
+  <!-- tiers -->
+  <rect x="180" y="1380" width="200" height="60" class="box"/>
+  <text x="280" y="1417" class="text">Tier 1</text>
+
+  <rect x="520" y="1380" width="200" height="60" class="box"/>
+  <text x="620" y="1417" class="text">Tier 2</text>
+
+  <path d="M400 1345 L280 1380" class="arrow"/>
+  <path d="M500 1345 L620 1380" class="arrow"/>
+
+  <!-- panel -->
+  <rect x="300" y="1470" width="300" height="60" class="box"/>
+  <text x="450" y="1507" class="text">PANEL CANDIDATES</text>
+
+  <path d="M280 1440 L380 1470" class="arrow"/>
+  <path d="M620 1440 L520 1470" class="arrow"/>
+</svg>
