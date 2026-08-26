@@ -4,8 +4,8 @@
 # RE_run_tiering.R — LOSO-safe RE-only tiering from RAW COUNTS + metadata
 #   1) Within-fold DESeq2 per training batch: design ~ condition
 #   2) RE-only meta-analysis across the two training batches (while storing FE/I^2)
-#   4) Tiering rules (your original logic)
-#   5) Outputs: RE_meta_ranked.csv, RE_tiers.csv
+#   3) Tiering rules (your original logic)
+#   4) Outputs: RE_meta_ranked.csv, RE_tiers.csv
 # =============================================================
 
 suppressPackageStartupMessages({
@@ -160,7 +160,8 @@ message(sprintf("[INFO] Training batches: A=%s, B=%s", batch_A, batch_B))
 # Step 1–2: DE per training batch
 # -------------------------------
 # Resume from previous checkpoint if files exist
-if (file.exists(file.path(out_dir, "RE_res_A.rds"))) {
+if (file.exists(file.path(out_dir, "RE_res_A.rds")) &&
+    file.exists(file.path(out_dir, "RE_res_B.rds"))) {
   res_A <- readRDS(file.path(out_dir, "RE_res_A.rds"))
   res_B <- readRDS(file.path(out_dir, "RE_res_B.rds"))
   message("[DEBUG] Loaded cached DESeq2 results; skipping DE computation")
@@ -241,6 +242,7 @@ meta_df <- meta_df %>%
   mutate(q_meta = p.adjust(p_meta, method = "BH"))
 
 
+# Keep full ranking in RE_meta_ranked.csv; interaction-filtering is applied only for tier assignment below.
 write_csv(meta_df, file.path(out_dir, "RE_meta_ranked.csv"))
 message("[INFO] Wrote RE_meta_ranked.csv")
 
@@ -299,8 +301,6 @@ if (length(eligible_batches) >= 2) {
 # Step 4: Tiering rules (unchanged logic)
 # -------------------------------
 min_abs_lfc <- 0.5   # effect-size floor
-I2_t1 <- 30
-I2_t2 <- 40
 
 tier_df <- meta_df %>%
   filter(!(gene_id %in% drop_interaction)) %>%
@@ -308,19 +308,17 @@ tier_df <- meta_df %>%
     sig_A = padj_A < 0.05,
     sig_B = padj_B < 0.05,
     sign_ok_AB = same_sign_AB,
-    low_hetero = !is.na(I2) & I2 <= I2_t1,
-    moderate_hetero = !is.na(I2) & I2 <= I2_t2,
     effect_ok_AB = abs(log2FC_A) >= min_abs_lfc & abs(log2FC_B) >= min_abs_lfc,
     expr_ok = ifelse(is.na(baseMean_A) | is.na(baseMean_B), TRUE,
                      pmax(baseMean_A, baseMean_B, na.rm = TRUE) > 10),
     Tier = case_when(
-      # Tier 1: both studies FDR<0.05, same sign, decent effect, low I², and meta q<0.05
+      # Tier 1: both studies FDR<0.05, same sign, decent effect, and meta q<0.05
       (sig_A & sig_B & sign_ok_AB & effect_ok_AB &
-         q_meta < 0.05 & low_hetero & expr_ok) ~ 1L,
+         q_meta < 0.05 & expr_ok) ~ 1L,
 
-      # Tier 2: one study significant, other nominal, same sign, meta q<0.10, moderate I²
+      # Tier 2: one study significant, other nominal, same sign, and meta q<0.10
       (((sig_A & sign_ok_AB) | (sig_B & sign_ok_AB)) &
-         q_meta < 0.10 & moderate_hetero & effect_ok_AB & expr_ok) ~ 2L,
+         q_meta < 0.10 & effect_ok_AB & expr_ok) ~ 2L,
 
       TRUE ~ NA_integer_
     )
@@ -330,7 +328,7 @@ tier_df <- meta_df %>%
 write_csv(tier_df, file.path(out_dir, "RE_tiers.csv"))
 message("[INFO] Wrote RE_tiers.csv")
 
-topN <- 2000  # adjust as desiredtopN 
+topN <- 2000  # adjust as desired
 tier12_genes <- tier_df %>%
   filter(Tier %in% c(1L,2L)) %>%
   arrange(Tier, meta_rank) %>%

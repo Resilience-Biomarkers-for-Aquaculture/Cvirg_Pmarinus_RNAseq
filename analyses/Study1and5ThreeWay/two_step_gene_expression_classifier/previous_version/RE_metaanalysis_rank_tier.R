@@ -137,8 +137,8 @@ message("[DEBUG Step 2] Wrote RE_meta_ranked.csv")
 
 # -------------------------------
 # [Step 3] Tiering rules
-#   Tier 1: A & B FDR<0.05 + same sign + (p_meta<0.01 & I^2≤30)
-#   Tier 2: one-study FDR<0.05, same sign, p_meta<0.05, I^2≤50
+#   Tier 1: A & B FDR<0.05 + same sign + p_meta<0.01
+#   Tier 2: one-study FDR<0.05, same sign, p_meta<0.05
 #   (Plus a light expression floor; adjust to platform.)
 # -------------------------------
 
@@ -147,13 +147,11 @@ tier_df <- meta_df %>%
     sig_A = padj_A < 0.05,
     sig_B = padj_B < 0.05,
     sign_ok_AB = same_sign_AB,
-    low_hetero = !is.na(I2) & I2 <= 30,
-    moderate_hetero = !is.na(I2) & I2 <= 50,
     expr_ok = ifelse(is.na(baseMean_A) | is.na(baseMean_B), TRUE,
                      pmax(baseMean_A, baseMean_B, na.rm = TRUE) > 10),
     Tier = case_when(
-      (sig_A & sig_B & sign_ok_AB & (p_meta < 0.01 & low_hetero)) ~ 1L,
-      (((sig_A & sign_ok_AB) | (sig_B & sign_ok_AB)) & (p_meta < 0.05) & moderate_hetero) ~ 2L,
+      (sig_A & sig_B & sign_ok_AB & (p_meta < 0.01)) ~ 1L,
+      (((sig_A & sign_ok_AB) | (sig_B & sign_ok_AB)) & (p_meta < 0.05)) ~ 2L,
       TRUE ~ NA_integer_
     )
   )
@@ -169,6 +167,6 @@ message(sprintf("[DEBUG Steps 3/5] Wrote RE_panel_candidates_tier12.txt (n=%d)",
 
 # -------------------------------
 # Notes:
-# - Step 6: Universe remains A∩B.
-# - Step 7: Thresholds (I^2 cutoffs, effect size, baseMean) are tuneable.
+# - Universe remains A∩B.
+# - Thresholds (effect size, baseMean) are tuneable.
 # ===============================
