@@ -12,7 +12,7 @@
 #     Step (1) Harmonize universe via intersection of A and B post-filter genes
 #     Step (2) Meta-analysis across A & B (RE model, while storing FE/I^2)
 #     Step (3) Tiering rules with sign-concordance across A/B only
-#   Also preps outputs for Python modeling (Steps 4–5).
+#   Produces RE-prefixed ranked, tiered, and panel-candidate outputs.
 #     Outputs:
 #       RE_meta_ranked.csv  (full meta-analysis results with scores)
 #       RE_tiers.csv        (full results with Tier assignments)
@@ -88,39 +88,39 @@ B2 <- B %>% filter(gene_id %in% genes_common) %>%
 #   - Track sign-concordance across studies.
 # -------------------------------
 
-meta_df <- A2 %>%
-  inner_join(B2, by = "gene_id", suffix = c(".A",".B")) %>%
-  rowwise() %>%
-  do({
-    # Pull per-study effect sizes (log2FC) and standard errors (lfcSE).
-    yi  <- c(.$log2FoldChange.A, .$log2FoldChange.B)
-    sei <- c(.$lfcSE.A,          .$lfcSE.B)
+meta_input <- A2 %>%
+  inner_join(B2, by = "gene_id", suffix = c(".A",".B"))
 
-    # Fit Fixed-Effect (FE) and Random-Effects (REML) models.
-    fe <- tryCatch(rma.uni(yi = yi, sei = sei, method = "FE"),    error = function(e) NULL)
-    re <- tryCatch(rma.uni(yi = yi, sei = sei, method = "REML"),  error = function(e) NULL)
+meta_df <- bind_rows(lapply(split(meta_input, meta_input$gene_id), function(.x) {
+  # Pull per-study effect sizes (log2FC) and standard errors (lfcSE).
+  yi  <- c(.x$log2FoldChange.A, .x$log2FoldChange.B)
+  sei <- c(.x$lfcSE.A,          .x$lfcSE.B)
 
-    # Safely extract estimates/p-values; NA on failures.
-    data.frame(
-      gene_id = .$gene_id,
-      beta_fe = if (!is.null(fe)) fe$b[1] else NA_real_,
-      p_fe    = if (!is.null(fe)) fe$pval  else NA_real_,
-      I2      = if (!is.null(fe)) fe$I2    else NA_real_,
-      beta_re = if (!is.null(re)) re$b[1] else NA_real_,
-      p_re    = if (!is.null(re)) re$pval else NA_real_,
-      # Sign consistency flags for A vs B (directional concordance requirement).
-      sign_A  = sign(.$log2FoldChange.A),
-      sign_B  = sign(.$log2FoldChange.B),
-      same_sign_AB = sign(.$log2FoldChange.A) == sign(.$log2FoldChange.B),
-      # Carry per-study stats for tiering decisions.
-      padj_A  = .$padj.A,
-      padj_B  = .$padj.B,
-      baseMean_A = .$baseMean.A,
-      baseMean_B = .$baseMean.B,
-      log2FC_A   = .$log2FoldChange.A,
-      log2FC_B   = .$log2FoldChange.B
-    )
-  }) %>% ungroup()
+  # Fit Fixed-Effect (FE) and Random-Effects (REML) models.
+  fe <- tryCatch(rma.uni(yi = yi, sei = sei, method = "FE"),    error = function(e) NULL)
+  re <- tryCatch(rma.uni(yi = yi, sei = sei, method = "REML"),  error = function(e) NULL)
+
+  # Safely extract estimates/p-values; NA on failures.
+  data.frame(
+    gene_id = .x$gene_id[1],
+    beta_fe = if (!is.null(fe)) fe$b[1] else NA_real_,
+    p_fe    = if (!is.null(fe)) fe$pval  else NA_real_,
+    I2      = if (!is.null(fe)) fe$I2    else NA_real_,
+    beta_re = if (!is.null(re)) re$b[1] else NA_real_,
+    p_re    = if (!is.null(re)) re$pval else NA_real_,
+    # Sign consistency flags for A vs B (directional concordance requirement).
+    sign_A  = sign(.x$log2FoldChange.A),
+    sign_B  = sign(.x$log2FoldChange.B),
+    same_sign_AB = sign(.x$log2FoldChange.A) == sign(.x$log2FoldChange.B),
+    # Carry per-study stats for tiering decisions.
+    padj_A  = .x$padj.A,
+    padj_B  = .x$padj.B,
+    baseMean_A = .x$baseMean.A,
+    baseMean_B = .x$baseMean.B,
+    log2FC_A   = .x$log2FoldChange.A,
+    log2FC_B   = .x$log2FoldChange.B
+  )
+}))
 
 # Use RE meta p-value; compute reproducibility score without I^2 penalty.
 meta_df <- meta_df %>%

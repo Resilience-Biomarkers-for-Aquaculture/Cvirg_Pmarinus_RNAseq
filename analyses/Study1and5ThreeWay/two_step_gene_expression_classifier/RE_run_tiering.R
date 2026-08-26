@@ -71,6 +71,37 @@ ensure_two_batches <- function(batches) {
   u
 }
 
+read_batch_cache <- function(path, batch_id, samples) {
+  payload <- readRDS(path)
+  required_fields <- c("batch_id", "samples", "result")
+  if (!is.list(payload) || !all(required_fields %in% names(payload))) {
+    return(NULL)
+  }
+
+  if (!identical(as.character(payload$batch_id), as.character(batch_id))) {
+    return(NULL)
+  }
+
+  expected_samples <- sort(as.character(samples))
+  cached_samples <- sort(as.character(payload$samples))
+  if (!identical(cached_samples, expected_samples)) {
+    return(NULL)
+  }
+
+  payload$result
+}
+
+write_batch_cache <- function(path, result, batch_id, samples) {
+  saveRDS(
+    list(
+      batch_id = as.character(batch_id),
+      samples = sort(as.character(samples)),
+      result = result
+    ),
+    file = path
+  )
+}
+
 deseq_per_batch <- function(counts_sxg, meta_s, batch_id, min_row_sum = 10L) {
   message("\n[INFO] ==== deseq_per_batch(", batch_id, ") ====")
 
@@ -159,18 +190,27 @@ message(sprintf("[INFO] Training batches: A=%s, B=%s", batch_A, batch_B))
 # -------------------------------
 # Step 1–2: DE per training batch
 # -------------------------------
-# Resume from previous checkpoint if files exist
-if (file.exists(file.path(out_dir, "RE_res_A.rds")) &&
-    file.exists(file.path(out_dir, "RE_res_B.rds"))) {
-  res_A <- readRDS(file.path(out_dir, "RE_res_A.rds"))
-  res_B <- readRDS(file.path(out_dir, "RE_res_B.rds"))
-  message("[DEBUG] Loaded cached DESeq2 results; skipping DE computation")
+# Resume from previous checkpoint if files match the current training batches
+cache_A_path <- file.path(out_dir, "RE_res_A.rds")
+cache_B_path <- file.path(out_dir, "RE_res_B.rds")
+samples_A <- meta$sample[meta$batch == batch_A]
+samples_B <- meta$sample[meta$batch == batch_B]
+
+res_A <- if (file.exists(cache_A_path)) read_batch_cache(cache_A_path, batch_A, samples_A) else NULL
+res_B <- if (file.exists(cache_B_path)) read_batch_cache(cache_B_path, batch_B, samples_B) else NULL
+
+if (!is.null(res_A) && !is.null(res_B)) {
+  message("[DEBUG] Loaded cached DESeq2 results matching current training batches; skipping DE computation")
 } else {
+  if (file.exists(cache_A_path) || file.exists(cache_B_path)) {
+    message("[DEBUG] Cached DESeq2 results did not match current training batches; recomputing")
+  }
+
   # Run DESeq2 normally
   res_A <- deseq_per_batch(counts, meta, batch_A)
   res_B <- deseq_per_batch(counts, meta, batch_B)
-  saveRDS(res_A, file=file.path(out_dir, "RE_res_A.rds"))
-  saveRDS(res_B, file=file.path(out_dir, "RE_res_B.rds"))
+  write_batch_cache(cache_A_path, res_A, batch_A, samples_A)
+  write_batch_cache(cache_B_path, res_B, batch_B, samples_B)
 }
 
 # Harmonize universe to intersection of A and B
@@ -290,7 +330,7 @@ if (length(eligible_batches) >= 2) {
   # Genes with significant interaction (condition effect differs by batch)
   drop_interaction <- res_int$gene_id[which(res_int$pvalue < 0.05 & !is.na(res_int$pvalue))]
 
-  message(sprintf("[INFO] Identified %d genes with significant batch×condition interaction; will exclude from meta-analysis.",
+  message(sprintf("[INFO] Identified %d genes with significant batch×condition interaction; will exclude from tier assignment/panel selection.",
                   length(drop_interaction)))
 } else {
   message("[INFO] Interaction LRT skipped (insufficient batches with both conditions).")
