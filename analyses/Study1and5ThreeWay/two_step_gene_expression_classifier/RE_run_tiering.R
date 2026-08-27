@@ -290,7 +290,12 @@ message("[INFO] Wrote RE_meta_ranked.csv")
 # -----------------------------------------------
 # Optional: detect genes with significant batch×condition interaction
 # -----------------------------------------------
-drop_interaction <- character(0)
+# NOTE: In this RE-only version, batch×condition interaction is calculated
+# for diagnostic purposes only and is not used as a hard exclusion criterion.
+# The random-effects meta-analysis already allows study-specific effect sizes,
+# while tiering separately requires same-sign effects and minimum effect size
+# in both training studies.
+interaction_genes <- character(0)
 
 # Run only if ≥2 batches present and both conditions represented in each
 batches_with_both <- tapply(meta$condition, meta$batch,
@@ -327,11 +332,11 @@ if (length(eligible_batches) >= 2) {
   res_int <- as.data.frame(res_int)
   res_int$gene_id <- rownames(res_int)
 
-  # Genes with significant interaction (condition effect differs by batch)
-  drop_interaction <- res_int$gene_id[which(res_int$pvalue < 0.05 & !is.na(res_int$pvalue))]
+  # Genes with nominally significant interaction (condition effect differs by batch)
+  interaction_genes <- res_int$gene_id[which(res_int$pvalue < 0.05 & !is.na(res_int$pvalue))]
 
-  message(sprintf("[INFO] Identified %d genes with significant batch×condition interaction; will exclude from tier assignment/panel selection.",
-                  length(drop_interaction)))
+  message(sprintf("[INFO] Identified %d genes with nominally significant batch×condition interaction.",
+                  length(interaction_genes)))
 } else {
   message("[INFO] Interaction LRT skipped (insufficient batches with both conditions).")
 }
@@ -342,8 +347,9 @@ if (length(eligible_batches) >= 2) {
 # -------------------------------
 min_abs_lfc <- 0.5   # effect-size floor
 
+# Do not filter interaction_genes here: in the RE-only workflow,
+# interaction is retained as a diagnostic rather than a tiering veto.
 tier_df <- meta_df %>%
-  filter(!(gene_id %in% drop_interaction)) %>%
   mutate(
     sig_A = padj_A < 0.05,
     sig_B = padj_B < 0.05,
