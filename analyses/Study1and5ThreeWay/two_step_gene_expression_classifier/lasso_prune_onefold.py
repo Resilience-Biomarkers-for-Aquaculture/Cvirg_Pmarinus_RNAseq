@@ -151,7 +151,7 @@ def stability_selection(X_df, y, batch, n_resamples=300, subsample_frac=0.7,
         best_coef = model.coef_.ravel()
 
         # Soft selection rule: count non-negligible coefficients
-        nz = np.flatnonzero(best_coef > 1e-4)
+        nz = np.flatnonzero(np.abs(best_coef) > 1e-4)
         if len(nz):
             sel_counts.iloc[nz] += 1.0
             coef_sums.iloc[nz] += np.abs(best_coef[nz])
