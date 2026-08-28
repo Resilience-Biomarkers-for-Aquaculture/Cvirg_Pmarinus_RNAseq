@@ -1,0 +1,587 @@
+<title>Cross-Study DEG Comparison — C. virginica × P. marinus</title>
+<style>
+/* ── Tokens ─────────────────────────────────────────── */
+:root {
+  --s1:      #f0f4f8;
+  --s2:      #ffffff;
+  --ink:     #0e1c2b;
+  --ink2:    #4a607a;
+  --ink3:    #8fa8be;
+  --accent:  #0d7a8a;
+  --border:  rgba(14,28,43,.10);
+  --grid:    rgba(14,28,43,.05);
+  --rule:    rgba(14,28,43,.15);
+
+  --ds1: #2a78d6; --ds2: #eb6834; --ds3: #1baf7a;
+  --ds4: #e09000; --ds5: #c060a0;
+
+  --bar1: #a8cdf0; --bar2: #4a8fe8; --bar3: #164e8c;
+
+  font-family: system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--s1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --s1:     #0b1520;
+    --s2:     #132030;
+    --ink:    #d8e6f0;
+    --ink2:   #7aa0b8;
+    --ink3:   #3d6078;
+    --accent: #2ab8cc;
+    --border: rgba(216,230,240,.10);
+    --grid:   rgba(216,230,240,.05);
+    --rule:   rgba(216,230,240,.15);
+    --ds1: #4a9ae8; --ds2: #e07858; --ds3: #28c890;
+    --ds4: #d4a830; --ds5: #d878b8;
+    --bar1: #1e4870; --bar2: #2560a8; --bar3: #70b0d8;
+  }
+}
+:root[data-theme="dark"] {
+  --s1:#0b1520; --s2:#132030; --ink:#d8e6f0; --ink2:#7aa0b8; --ink3:#3d6078;
+  --accent:#2ab8cc; --border:rgba(216,230,240,.10);
+  --grid:rgba(216,230,240,.05); --rule:rgba(216,230,240,.15);
+  --ds1:#4a9ae8; --ds2:#e07858; --ds3:#28c890;
+  --ds4:#d4a830; --ds5:#d878b8;
+  --bar1:#1e4870; --bar2:#2560a8; --bar3:#70b0d8;
+}
+:root[data-theme="light"] {
+  --s1:#f0f4f8; --s2:#ffffff; --ink:#0e1c2b; --ink2:#4a607a; --ink3:#8fa8be;
+  --accent:#0d7a8a; --border:rgba(14,28,43,.10); --grid:rgba(14,28,43,.05);
+  --rule:rgba(14,28,43,.15);
+  --ds1:#2a78d6; --ds2:#eb6834; --ds3:#1baf7a; --ds4:#e09000; --ds5:#c060a0;
+  --bar1:#a8cdf0; --bar2:#4a8fe8; --bar3:#164e8c;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Page shell ─────────────────────────────────────── */
+.page { max-width: 980px; margin: 0 auto; padding: 52px 28px 88px; }
+
+/* ── Header ─────────────────────────────────────────── */
+.eyebrow {
+  font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+}
+.eyebrow::before {
+  content: ''; display: block; width: 32px; height: 2px;
+  background: var(--accent); flex-shrink: 0;
+}
+h1 {
+  font-size: 30px; font-weight: 700; letter-spacing: -.03em;
+  line-height: 1.15; text-wrap: balance; color: var(--ink); margin-bottom: 10px;
+}
+.lede {
+  font-size: 14.5px; color: var(--ink2); max-width: 620px;
+  line-height: 1.65; margin-bottom: 40px;
+}
+
+/* ── KPI strip ──────────────────────────────────────── */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 36px; }
+.kpi {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 5px; padding: 18px 20px; border-top: 2.5px solid var(--rule);
+}
+.kpi.hi { border-top-color: var(--accent); }
+.kv {
+  font-size: 32px; font-weight: 700; letter-spacing: -.04em;
+  color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 5px;
+}
+.kpi.hi .kv { color: var(--accent); }
+.kl { font-size: 11.5px; color: var(--ink3); }
+
+/* ── Legend ─────────────────────────────────────────── */
+.legend-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 24px; align-items: center; }
+.leg-label { font-size: 11px; color: var(--ink3); letter-spacing: .06em; text-transform: uppercase; margin-right: 4px; }
+.leg-chip {
+  display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ink2);
+  background: var(--s2); border: 1px solid var(--border); border-radius: 24px;
+  padding: 4px 12px 4px 8px;
+}
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.leg-chip .sub { color: var(--ink3); font-size: 10.5px; margin-left: 2px; }
+
+/* ── UpSet figure ────────────────────────────────────── */
+.fig {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 7px; padding: 24px 24px 20px; margin-bottom: 36px; position: relative;
+}
+.fig canvas { display: block; width: 100%; cursor: crosshair; touch-action: none; }
+figcaption {
+  margin-top: 12px; font-size: 12px; color: var(--ink3);
+  line-height: 1.65; max-width: 840px;
+}
+figcaption b { color: var(--ink2); font-weight: 600; }
+
+/* ── Tooltip ─────────────────────────────────────────── */
+.tt {
+  position: absolute; background: var(--s2); border: 1px solid var(--border);
+  border-radius: 5px; padding: 8px 12px; font-size: 12px; color: var(--ink);
+  box-shadow: 0 4px 16px rgba(0,0,0,.15); pointer-events: none;
+  opacity: 0; transition: opacity .12s; z-index: 20; white-space: nowrap;
+}
+.tt.show { opacity: 1; }
+.tt-title { font-weight: 600; margin-bottom: 2px; }
+.tt-val { color: var(--accent); font-variant-numeric: tabular-nums; font-size: 13px; }
+
+/* ── Gene table section ──────────────────────────────── */
+.sec-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+h2 { font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+.badge {
+  background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
+  padding: 2px 9px; border-radius: 20px; font-variant-numeric: tabular-nums;
+}
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 7px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  padding: 9px 14px; text-align: left; font-size: 10.5px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--ink3);
+  border-bottom: 1px solid var(--border); background: var(--s2);
+  white-space: nowrap; position: sticky; top: 0; z-index: 5;
+}
+tbody tr td { border-bottom: 1px solid var(--grid); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--s1); }
+td { padding: 10px 14px; vertical-align: top; color: var(--ink); }
+td.mono {
+  font-family: ui-monospace,"Cascadia Code","Source Code Pro",monospace;
+  font-size: 11.5px; color: var(--accent); white-space: nowrap;
+}
+td.desc { font-size: 12.5px; color: var(--ink2); max-width: 240px; line-height: 1.45; }
+td.xp {
+  font-family: ui-monospace,"Cascadia Code","Source Code Pro",monospace;
+  font-size: 10.5px; color: var(--ink3); white-space: nowrap;
+}
+.sdots { display: flex; gap: 4px; padding-top: 1px; }
+.sdot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid transparent;
+}
+.sdot.off { background: transparent; border-color: var(--rule); }
+.ctags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+.ctag {
+  font-size: 10px; font-family: ui-monospace,monospace;
+  padding: 1px 5px; border-radius: 3px;
+  background: var(--s1); color: var(--ink2); border: 1px solid var(--rule);
+  white-space: nowrap;
+}
+.ctag.s1 { background: color-mix(in srgb,var(--ds1) 12%,transparent); border-color: color-mix(in srgb,var(--ds1) 28%,transparent); color: var(--ds1); }
+.ctag.s2 { background: color-mix(in srgb,var(--ds2) 12%,transparent); border-color: color-mix(in srgb,var(--ds2) 28%,transparent); color: var(--ds2); }
+.ctag.s3 { background: color-mix(in srgb,var(--ds3) 12%,transparent); border-color: color-mix(in srgb,var(--ds3) 28%,transparent); color: var(--ds3); }
+.ctag.s4 { background: color-mix(in srgb,var(--ds4) 12%,transparent); border-color: color-mix(in srgb,var(--ds4) 28%,transparent); color: var(--ds4); }
+.ctag.s5 { background: color-mix(in srgb,var(--ds5) 12%,transparent); border-color: color-mix(in srgb,var(--ds5) 28%,transparent); color: var(--ds5); }
+
+@media (max-width: 640px) {
+  .kpi-row { grid-template-columns: repeat(2,1fr); }
+  h1 { font-size: 22px; }
+}
+</style>
+
+<div class="page">
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">C. virginica &times; P. marinus &nbsp;&middot;&nbsp; 5 RNAseq Studies</div>
+    <h1>Differentially Expressed Genes<br>Across Studies</h1>
+    <p class="lede">Cross-study comparison identifying gene loci consistently detected as differentially expressed across independent experimental designs and research groups. Genes are matched by LOC accession using the <em>C. virginica</em>-3.0 reference assembly.</p>
+  </header>
+
+  <!-- KPI strip -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kv">5,989</div>
+      <div class="kl">Unique gene loci</div>
+    </div>
+    <div class="kpi">
+      <div class="kv">5,575</div>
+      <div class="kl">Identified in 1 study only</div>
+    </div>
+    <div class="kpi">
+      <div class="kv">394</div>
+      <div class="kl">Shared by 2 studies</div>
+    </div>
+    <div class="kpi hi">
+      <div class="kv">20</div>
+      <div class="kl">Shared by 3 studies</div>
+    </div>
+  </div>
+
+  <!-- Study legend -->
+  <div class="legend-row">
+    <span class="leg-label">Studies</span>
+    <div class="leg-chip"><div class="leg-dot" style="background:var(--ds1)"></div>DS1 <span class="sub">Family resistance (DESeq2)</span></div>
+    <div class="leg-chip"><div class="leg-dot" style="background:var(--ds2)"></div>DS2 <span class="sub">Pm infection (edgeR)</span></div>
+    <div class="leg-chip"><div class="leg-dot" style="background:var(--ds3)"></div>DS3 <span class="sub">Cv &amp; Cg Pm infection</span></div>
+    <div class="leg-chip"><div class="leg-dot" style="background:var(--ds4)"></div>DS4 <span class="sub">Time-course infection</span></div>
+    <div class="leg-chip"><div class="leg-dot" style="background:var(--ds5)"></div>DS5 <span class="sub">Resistance vs susceptibility</span></div>
+  </div>
+
+  <!-- UpSet plot -->
+  <figure class="fig" id="fig-wrap">
+    <canvas id="upset" height="490"></canvas>
+    <div class="tt" id="tt"></div>
+    <figcaption>
+      <b>Figure 1.</b> UpSet plot of DEG intersections. Vertical bars (log<sub>2</sub> scale, labeled with exact count) show gene counts unique to or shared by each combination of studies; bars are colored by number of studies in the intersection (light = 1, medium = 2, dark = 3). Horizontal bars (left, log<sub>2</sub> scale) show each study's total DEG count. Matrix dots indicate set membership for each combination.
+    </figcaption>
+  </figure>
+
+  <!-- 3-study table -->
+  <section>
+    <div class="sec-head">
+      <h2>Genes shared by 3 studies</h2>
+      <span class="badge">20</span>
+    </div>
+    <div class="table-wrap">
+      <table id="gene-table">
+        <thead>
+          <tr>
+            <th>LOC ID</th>
+            <th>Gene description</th>
+            <th>Canonical XP</th>
+            <th>Studies</th>
+            <th>Within-study comparisons</th>
+          </tr>
+        </thead>
+        <tbody id="gene-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ── Data ──────────────────────────────────────────────── */
+const STUDIES = ['DS1','DS2','DS3','DS4','DS5'];
+const TOTALS  = {DS1:3811, DS2:30, DS3:1328, DS4:1190, DS5:64};
+
+const COMBOS = [
+  {c:['DS1'],s:3430},{c:['DS3'],s:1134},{c:['DS4'],s:939},
+  {c:['DS1','DS4'],s:204},{c:['DS1','DS3'],s:150},
+  {c:['DS5'],s:47},{c:['DS2'],s:25},{c:['DS3','DS4'],s:22},
+  {c:['DS1','DS3','DS4'],s:16},{c:['DS1','DS5'],s:7},
+  {c:['DS3','DS5'],s:4},{c:['DS4','DS5'],s:3},{c:['DS1','DS4','DS5'],s:3},
+  {c:['DS2','DS4'],s:2},{c:['DS1','DS2'],s:1},
+  {c:['DS2','DS3'],s:1},{c:['DS2','DS3','DS4'],s:1}
+];
+
+const COMP_SHORT = {
+  fam90_vs_fam84:'fam84', fam90_vs_fam89:'fam89', fam90_vs_fam120:'fam120',
+  Pmarinus_infection:'Pm infect.', Cv_Pmarinus_infection:'Cv', Cg_Pmarinus_infection:'Cg',
+  '6h_fed_vs_ctrl':'6 h','36h_fed_vs_inj':'36 h','7d_fed_vs_inj':'7 d','28d_fed_vs_inj':'28 d',
+  resistant_fam266_36h_7d:'resist.', susceptible_fam242_36h_28d:'suscept.'
+};
+
+const GENES = [
+  {id:'LOC111099194',d:'uncharacterized protein LOC111099194',xp:'XP_022286312.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam120'},DS2:{y:0},DS3:{y:0},DS4:{y:1,n:1,c:'28d_fed_vs_inj'},DS5:{y:1,n:1,c:'susceptible_fam242_36h_28d'}},
+  {id:'LOC111099595',d:'uncharacterized protein LOC111099595',xp:'XP_022286636.1',
+   DS1:{y:1,n:2,c:'fam90_vs_fam120; fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'6h_fed_vs_ctrl'},DS5:{y:0}},
+  {id:'LOC111100471',d:'baculoviral IAP repeat-containing protein 3-like isoform X3',xp:'XP_022288100.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'6h_fed_vs_ctrl'},DS5:{y:0}},
+  {id:'LOC111100633',d:'baculoviral IAP repeat-containing protein 7-like',xp:'XP_022288420.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam120'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'36h_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111100843',d:'uncharacterized protein LOC111100843 isoform X1',xp:'XP_022288663.1',
+   DS1:{y:1,n:3,c:'fam90_vs_fam120; fam90_vs_fam84; fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'6h_fed_vs_ctrl'},DS5:{y:0}},
+  {id:'LOC111103270',d:'baculoviral IAP repeat-containing protein 3-like isoform X1',xp:'XP_022292108.1',
+   DS1:{y:1,n:2,c:'fam90_vs_fam84; fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:3,c:'28d_fed_vs_inj; 6h_fed_vs_ctrl; 7d_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111104250',d:'semaphorin-5A-like',xp:'XP_022293804.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam120'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'28d_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111104525',d:'uncharacterized protein LOC111104525',xp:'XP_022294234.1',
+   DS1:{y:1,n:2,c:'fam90_vs_fam84; fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'36h_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111106038',d:'uncharacterized protein LOC111106038',xp:'XP_022296261.1',
+   DS1:{y:1,n:3,c:'fam90_vs_fam120; fam90_vs_fam84; fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'7d_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111106874',d:'uncharacterized protein LOC111106874 isoform X5',xp:'XP_022297444.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'28d_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111108100',d:'ryncolin-1-like',xp:'XP_022299376.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam120'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'28d_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111109688',d:'complement C1q subcomponent subunit B-like',xp:'XP_022301614.1',
+   DS1:{y:1,n:3,c:'fam90_vs_fam120; fam90_vs_fam84; fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'7d_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111111879',d:'cytochrome P450 3A11-like isoform X1',xp:'XP_022304768.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam120'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'6h_fed_vs_ctrl'},DS5:{y:0}},
+  {id:'LOC111120907',d:'myosin heavy chain, striated muscle-like isoform X3',xp:'XP_022317644.1',
+   DS1:{y:1,n:2,c:'fam90_vs_fam120; fam90_vs_fam89'},DS2:{y:0},DS3:{y:0},DS4:{y:1,n:2,c:'28d_fed_vs_inj; 6h_fed_vs_ctrl'},DS5:{y:1,n:1,c:'susceptible_fam242_36h_28d'}},
+  {id:'LOC111121115',d:'phytanoyl-CoA dioxygenase domain-containing protein 1-like',xp:'XP_022317952.1',
+   DS1:{y:0},DS2:{y:1,n:1,c:'Pmarinus_infection'},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'28d_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111126421',d:'tetraspanin-9-like',xp:'XP_022326766.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam89'},DS2:{y:0},DS3:{y:0},DS4:{y:1,n:1,c:'28d_fed_vs_inj'},DS5:{y:1,n:1,c:'susceptible_fam242_36h_28d'}},
+  {id:'LOC111128494',d:'legumain-like isoform X3',xp:'XP_022329821.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'36h_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111130369',d:'uncharacterized protein LOC111130369 isoform X2',xp:'XP_022333084.1',
+   DS1:{y:1,n:2,c:'fam90_vs_fam120; fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:2,c:'28d_fed_vs_inj; 6h_fed_vs_ctrl'},DS5:{y:0}},
+  {id:'LOC111134931',d:'uncharacterized protein LOC111134931',xp:'XP_022340231.1',
+   DS1:{y:1,n:1,c:'fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'28d_fed_vs_inj'},DS5:{y:0}},
+  {id:'LOC111135695',d:'TNF receptor-associated factor 4-like isoform X1',xp:'XP_022341685.1',
+   DS1:{y:1,n:2,c:'fam90_vs_fam84; fam90_vs_fam89'},DS2:{y:0},DS3:{y:1,n:1,c:'Cv_Pmarinus_infection'},DS4:{y:1,n:1,c:'28d_fed_vs_inj'},DS5:{y:0}}
+];
+
+/* ── Utilities ─────────────────────────────────────────── */
+function cv(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function log2h(v) { return Math.log2(v + 1); }
+
+/* ── Gene table ────────────────────────────────────────── */
+(function buildTable() {
+  const tbody = document.getElementById('gene-tbody');
+  GENES.forEach(g => {
+    const geneNum = g.id.replace('LOC','');
+    const ncbiUrl = `https://www.ncbi.nlm.nih.gov/gene/${geneNum}`;
+
+    let dotHtml = '<div class="sdots">';
+    STUDIES.forEach(s => {
+      const on = g[s]?.y;
+      dotHtml += `<div class="sdot ${on ? '' : 'off'}" style="${on ? `background:var(--${s.toLowerCase()})` : ''}" title="${s}"></div>`;
+    });
+    dotHtml += '</div>';
+
+    let compHtml = '';
+    STUDIES.forEach((s,si) => {
+      if (!g[s]?.y) return;
+      const comps = (g[s].c || '').split('; ').filter(Boolean);
+      comps.forEach(ckey => {
+        const label = COMP_SHORT[ckey] || ckey;
+        compHtml += `<span class="ctag s${si+1}" title="${s}: ${ckey}">${s}&middot;${label}</span>`;
+      });
+    });
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono"><a href="${ncbiUrl}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">${g.id}</a></td>
+      <td class="desc">${g.d}</td>
+      <td class="xp">${g.xp}</td>
+      <td>${dotHtml}</td>
+      <td><div class="ctags">${compHtml}</div></td>`;
+    tbody.appendChild(tr);
+  });
+})();
+
+/* ── UpSet canvas ──────────────────────────────────────── */
+(function initUpSet() {
+  const canvas = document.getElementById('upset');
+  const ctx    = canvas.getContext('2d');
+  const tt     = document.getElementById('tt');
+  const fig    = document.getElementById('fig-wrap');
+
+  const LW = 880, LH = 490;
+  let bars = [];
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width  = LW * dpr;
+    canvas.height = LH * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function draw() {
+    bars = [];
+    ctx.clearRect(0, 0, LW, LH);
+
+    const ink2 = cv('--ink2');
+    const ink3 = cv('--ink3');
+    const grid = cv('--grid');
+    const rule = cv('--rule');
+    const sColors = STUDIES.map((_,i) => cv(`--ds${i+1}`));
+    const barCol  = [cv('--bar1'), cv('--bar2'), cv('--bar3')];
+
+    const N      = COMBOS.length;
+    const MAT_L  = 195;
+    const MAT_T  = 258;
+    const BAR_T  = 22;
+    const BAR_H  = MAT_T - BAR_T - 8;
+    const COL_W  = (LW - MAT_L - 8) / N;
+    const ROW_H  = (LH - MAT_T) / 5;
+    const SET_W  = MAT_L - 98;
+
+    const logMax  = log2h(3430);
+    const logMaxT = log2h(3811);
+
+    const colX = i => MAT_L + (i + 0.5) * COL_W;
+    const rowY = j => MAT_T + (j + 0.5) * ROW_H;
+    const barH = v => (log2h(v) / logMax) * BAR_H;
+    const setW = v => (log2h(v) / logMaxT) * SET_W;
+
+    /* Y-axis */
+    ctx.save();
+    ctx.strokeStyle = rule;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(MAT_L, BAR_T);
+    ctx.lineTo(MAT_L, BAR_T + BAR_H);
+    ctx.stroke();
+
+    [1, 10, 100, 1000, 3430].forEach(v => {
+      const y = BAR_T + BAR_H - barH(v);
+      ctx.beginPath();
+      ctx.moveTo(MAT_L - 4, y);
+      ctx.lineTo(MAT_L, y);
+      ctx.strokeStyle = rule;
+      ctx.stroke();
+      ctx.textAlign = 'right';
+      ctx.font = '10px system-ui';
+      ctx.fillStyle = ink3;
+      ctx.fillText(v >= 1000 ? (v === 3430 ? '3.4k' : v/1000+'k') : String(v), MAT_L - 7, y + 3.5);
+    });
+    ctx.restore();
+
+    /* Y-axis label */
+    ctx.save();
+    ctx.translate(10, BAR_T + BAR_H / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.font = '10px system-ui';
+    ctx.fillStyle = ink3;
+    ctx.fillText('Gene count (log₂)', 0, 0);
+    ctx.restore();
+
+    /* Intersection bars */
+    COMBOS.forEach((combo, i) => {
+      const x  = colX(i);
+      const h  = barH(combo.s);
+      const y  = BAR_T + BAR_H - h;
+      const w  = Math.max(COL_W * 0.55, 12);
+      const col = barCol[combo.c.length - 1];
+
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      const r = Math.min(3, h / 2, w / 2);
+      ctx.moveTo(x - w/2 + r, y);
+      ctx.lineTo(x + w/2 - r, y);
+      ctx.arcTo(x + w/2, y, x + w/2, y + r, r);
+      ctx.lineTo(x + w/2, y + h);
+      ctx.lineTo(x - w/2, y + h);
+      ctx.lineTo(x - w/2, y + r);
+      ctx.arcTo(x - w/2, y, x - w/2 + r, y, r);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.textAlign = 'center';
+      ctx.font = `${combo.s >= 100 ? 9.5 : 10}px system-ui`;
+      ctx.fillStyle = ink2;
+      ctx.fillText(combo.s, x, y - 4);
+
+      bars.push({ x1: x - w/2, y1: y, x2: x + w/2, y2: BAR_T + BAR_H, combo });
+    });
+
+    /* Matrix empty circles */
+    COMBOS.forEach((combo, i) => {
+      STUDIES.forEach((s, j) => {
+        if (combo.c.includes(s)) return;
+        const x = colX(i), y = rowY(j);
+        ctx.beginPath();
+        ctx.arc(x, y, 5.5, 0, Math.PI * 2);
+        ctx.strokeStyle = grid;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
+    });
+
+    /* Connecting lines */
+    COMBOS.forEach((combo, i) => {
+      const active = combo.c.map(s => STUDIES.indexOf(s)).sort((a,b)=>a-b);
+      if (active.length < 2) return;
+      const x = colX(i);
+      ctx.beginPath();
+      ctx.moveTo(x, rowY(active[0]));
+      active.slice(1).forEach(j => ctx.lineTo(x, rowY(j)));
+      ctx.strokeStyle = ink2;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    });
+
+    /* Filled dots */
+    COMBOS.forEach((combo, i) => {
+      combo.c.forEach(s => {
+        const j = STUDIES.indexOf(s);
+        ctx.beginPath();
+        ctx.arc(colX(i), rowY(j), 7, 0, Math.PI * 2);
+        ctx.fillStyle = sColors[j];
+        ctx.fill();
+      });
+    });
+
+    /* Baseline */
+    ctx.beginPath();
+    ctx.moveTo(MAT_L, BAR_T + BAR_H);
+    ctx.lineTo(LW - 4, BAR_T + BAR_H);
+    ctx.strokeStyle = rule;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    /* Study labels */
+    STUDIES.forEach((s, j) => {
+      ctx.textAlign = 'right';
+      ctx.font = '600 12px system-ui';
+      ctx.fillStyle = sColors[j];
+      ctx.fillText(s, 88, rowY(j) + 4);
+    });
+
+    /* Set size bars */
+    STUDIES.forEach((s, j) => {
+      const y  = rowY(j);
+      const w  = setW(TOTALS[s]);
+      const bY = y - 7;
+      const bH = 14;
+      ctx.fillStyle = sColors[j];
+      ctx.globalAlpha = 0.22;
+      ctx.fillRect(90, bY, w, bH);
+      ctx.globalAlpha = 0.65;
+      ctx.fillRect(90, bY, Math.min(w, 3), bH);
+      ctx.globalAlpha = 1;
+      ctx.textAlign = 'left';
+      ctx.font = '10px system-ui';
+      ctx.fillStyle = ink3;
+      ctx.fillText(TOTALS[s].toLocaleString(), 90 + w + 4, y + 3.5);
+    });
+
+    /* Set bar axis label */
+    ctx.textAlign = 'center';
+    ctx.font = '10px system-ui';
+    ctx.fillStyle = ink3;
+    ctx.fillText('Set size →', 135, MAT_T - 8);
+
+    /* Bar color legend */
+    const legX = LW - 134, legY = LH - 32;
+    ['1 study','2 studies','3 studies'].forEach((label, i) => {
+      const x = legX + i * 46;
+      ctx.fillStyle = barCol[i];
+      ctx.fillRect(x, legY, 10, 10);
+      ctx.textAlign = 'left';
+      ctx.font = '9.5px system-ui';
+      ctx.fillStyle = ink3;
+      ctx.fillText(label, x + 13, legY + 8.5);
+    });
+  }
+
+  /* Tooltip */
+  canvas.addEventListener('mousemove', e => {
+    const rect   = canvas.getBoundingClientRect();
+    const scaleX = LW / rect.width;
+    const scaleY = LH / rect.height;
+    const mx = (e.clientX - rect.left) * scaleX;
+    const my = (e.clientY - rect.top)  * scaleY;
+
+    let hit = null;
+    for (const b of bars) {
+      if (mx >= b.x1 && mx <= b.x2 && my >= b.y1 && my <= b.y2) { hit = b; break; }
+    }
+    if (hit) {
+      tt.innerHTML = `<div class="tt-title">${hit.combo.c.join(' ∩ ')}</div><div class="tt-val">${hit.combo.s.toLocaleString()} gene${hit.combo.s > 1 ? 's' : ''}</div>`;
+      const figRect = fig.getBoundingClientRect();
+      tt.style.left = Math.min(e.clientX - figRect.left + 12, fig.clientWidth - 180) + 'px';
+      tt.style.top  = (e.clientY - figRect.top - 8) + 'px';
+      tt.classList.add('show');
+    } else {
+      tt.classList.remove('show');
+    }
+  });
+  canvas.addEventListener('mouseleave', () => tt.classList.remove('show'));
+
+  /* Redraw on theme change */
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+  new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+  resize();
+  window.addEventListener('resize', resize);
+})();
+</script>
