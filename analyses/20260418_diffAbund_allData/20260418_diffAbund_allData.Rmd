@@ -1,0 +1,292 @@
+---
+title: "Untitled"
+author: "Shelly Trigg"
+date: "4/18/2026"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+This is an analysis of the tables resulting from differentialAbundance run on 4/18/26 by Shelly Wanamaker of 217 samples using the matrix file https://gannet.fish.washington.edu/metacarcinus/USDA_MetaOmics/Cvirg_RNAseq/20260418_diffabund/all_merged_gene_countsCorrected2_length_scaled.tsv, the samplesheet https://gannet.fish.washington.edu/metacarcinus/USDA_MetaOmics/Cvirg_RNAseq/20260418_diffabund/ and contrasts file https://gannet.fish.washington.edu/metacarcinus/USDA_MetaOmics/Cvirg_RNAseq/20260418_diffabund/rnaseq_diffabundance_contrasts.csv. It also includes tables resulting from post-analysis data integration run on the same day. 
+
+load libraries
+```{r}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(stringr)
+library(UpSetR)
+library(tibble)
+library(ComplexHeatmap)
+library(circlize)
+
+```
+
+
+
+Prepare merged matrix of gene counts scaled by length 
+```{r}
+oldallds <- read.csv("../../data/rnaseq_gene_counts/all_merged_gene_counts_length_scaled.tsv", sep = "\t")
+
+ds1 <- read.csv("../../data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset1.tsv", sep = "\t")
+ds2 <- read.csv("../../data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset2.tsv", sep = "\t")
+ds3 <- read.csv("../../data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset3.tsv", sep = "\t")
+ds4 <- read.csv("../../data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset4.tsv", sep = "\t")
+ds5 <- read.csv("../../data/rnaseq_gene_counts/salmon.merged.gene_counts_length_scaled_dataset5.tsv", sep = "\t")
+
+
+allds <- full_join(ds1,ds2, by = c("gene_name", "gene_id"))
+allds <- full_join(allds,ds3, by = c("gene_name", "gene_id"))
+allds <- full_join(allds,ds4, by = c("gene_name", "gene_id"))
+allds <- full_join(allds,ds5, by = c("gene_name", "gene_id"))
+allds$gene_name <- NULL
+
+
+#confirm if old and new tables are using the correct data
+View(merge(allds %>% pivot_longer(cols = 2:ncol(allds),names_to = "samples", values_to = "VSTcounts"), oldallds%>% pivot_longer(cols = 2:ncol(oldallds),names_to = "samples", values_to = "VSTcounts"), by = c("gene_id", "samples")))
+
+#filter for dataset2 sample (e.g. SRX7656987)
+#all values are the same so data is correct
+
+#this is the file that was linked above
+write.table(allds, "../../data/rnaseq_gene_counts/all_merged_gene_countsCorrected2_length_scaled.tsv", sep = "\t", row.names = F, quote = F)
+
+
+```
+
+read in data
+```{r}
+ds1_filt <- read.csv("../../analyses/20260418_diffAbund_allData/ds1_condition_sensitive_tolerant.deseq2.results_filtered.tsv", sep = "\t")
+
+ds2_filt <- read.csv("../../analyses/20260418_diffAbund_allData/ds2_condition_sensitive_tolerant.deseq2.results_filtered.tsv", sep = "\t")
+
+ds3_filt <- read.csv("../../analyses/20260418_diffAbund_allData/ds3_condition_sensitive_tolerant.deseq2.results_filtered.tsv", sep = "\t")
+
+ds4_filt <- read.csv("../../analyses/20260418_diffAbund_allData/ds4_condition_sensitive_tolerant.deseq2.results_filtered.tsv", sep = "\t")
+
+ds5_filt <- read.csv("../../analyses/20260418_diffAbund_allData/ds5_condition_sensitive_tolerant.deseq2.results_filtered.tsv", sep = "\t")
+
+allds_filt <- read.csv("../../analyses/20260418_diffAbund_allData/allds_condition_sensitive_tolerant.deseq2.results_filtered.tsv", sep = "\t")
+
+
+#from https://gannet.fish.washington.edu/metacarcinus/USDA_MetaOmics/Cvirg_RNAseq/20260418_diffabund/allds/tables/processed_abundance/
+
+norm_counts0418<-read.csv("../../analyses/20260418_diffAbund_allData/all.normalised_counts.tsv", sep ="\t")
+
+vst_counts0418 <- read.csv("../../analyses/20260418_diffAbund_allData/all.vst.tsv", sep ="\t")
+
+samplesheet <- read.csv("../../data/differential_abundance_sheets/rnaseq_difabundance_fullset_s3_samplesheet.csv")
+```
+
+add dataset column to samplesheet
+```{r}
+samplesheet$study <- (c(rep("study_3",10), rep("study_1",61),rep("study_5",62), rep("study_2",40), rep("study_4",44)))
+```
+
+plot gene abundances of DEGs from all data together
+```{r}
+jpeg("../20260418_diffAbund_allData/Boxplots_VST_18DEGs_DESeq2.jpeg", width = 7, height = 8, units = "in", res = 300)
+data.frame(vst_counts0418) %>% pivot_longer(cols = 2:218, names_to = "sample", values_to = "VST") %>% filter(gene_id %in% allds_filt$gene_id) %>% right_join(samplesheet %>% dplyr::select(sample,study, condition)) %>% ggplot() + geom_boxplot(aes(x = condition, y = VST), fill = NA, outlier.shape = NA) + geom_jitter(aes(x=condition,y=VST, color = study), shape = 16, size = 0.7, alpha = 0.7) +  facet_wrap(~gene_id, scales = "free")+ theme_bw()+ theme(legend.position = "top", axis.text.x =element_text(angle = 20))
+dev.off()
+```
+
+plot pca
+```{r}
+#prep data for PCA
+#create matrix from counts matrix
+vst_counts0418_filt <- vst_counts0418 %>% filter(gene_id %in% allds_filt$gene_id)
+rownames(vst_counts0418_filt)<- vst_counts0418_filt[,1]
+vst_counts0418_filt <- t(vst_counts0418_filt)
+vst_counts0418_filt <- vst_counts0418_filt[-1,]
+vst_counts0418_m <- apply(vst_counts0418_filt,2,as.numeric)
+rownames(vst_counts0418_m)<- rownames(vst_counts0418_filt)
+
+pca_filt <- prcomp(vst_counts0418_m, center = T, scale = T)
+
+pca_filt_summ <- summary(pca_filt)
+
+pca_filt_meta <- merge(samplesheet[,c("sample", "condition","study")],cbind(sample =rownames(pca_filt$x), pca_filt$x), by = "sample") %>% mutate(across(4:ncol(.), as.numeric))
+
+
+jpeg("../20260418_diffAbund_allData/PCA_VST_18DEGs_DESeq2.jpeg", width = 4, height = 3, units = "in", res = 300)
+ggplot(pca_filt_meta, aes(PC1, PC2,color = study, shape = condition))+ geom_point() + theme_bw() + labs(y = paste("PC2"," (",formatC(pca_filt_summ$importance[5] * 100,digits=2,format="f"),"%)", sep = ""), x = paste("PC1"," (",formatC(pca_filt_summ$importance[2] * 100,digits=2,format="f"),"%)", sep = "")) + ggtitle("PCA of VST gene expression for 18 genes")+ scale_shape_manual(values = c(4,16))
+dev.off()
+
+```
+
+merging data from study specific diffabund
+```{r}
+
+# Automatically grab all *_filt objects
+obj_names <- ls(pattern = "ds[0-9]_filt$")
+#obj_names <- obj_names[which(obj_names !="ds2_filt")]
+#obj_names <- c(obj_names,"allds_filt")
+df_list <- mget(obj_names)
+
+# Rename columns using object name as study prefix
+df_list_renamed <- imap(df_list, function(df, obj_name) {
+
+  study <- str_remove(obj_name, "_filt$")  # ds1, ds2, etc.
+
+  df %>%
+    rename_with(
+      ~ paste0(study, "_", .x),
+      .cols = -gene_id
+    )
+})
+
+# Full join across all studies
+merged_df <- reduce(df_list_renamed, full_join, by = "gene_id")
+
+
+# Identify presence via baseMean columns
+baseMean_cols <- grep("_baseMean$", names(merged_df), value = TRUE)
+
+merged_df <- merged_df %>%
+  mutate(
+    studies_detected_in = rowSums(!is.na(across(all_of(baseMean_cols))))
+  ) %>%
+  arrange(desc(studies_detected_in))
+
+#write table of merged results
+write.table(merged_df, "ds1-5_allDEGs_merged.csv", sep = ",", row.names = F, quote = F)
+
+merged_df %>%
+  ggplot(aes(x = studies_detected_in)) +
+  geom_bar() +
+  theme_minimal() +
+  xlab("Number of studies gene appears in") +
+  ylab("Number of genes")
+
+
+
+# build binary membership dataframe
+presence_df <- merged_df %>%
+  select(all_of(baseMean_cols)) %>%
+  mutate(across(
+    everything(),
+    ~ ifelse(is.na(.x), 0, 1)
+  ))
+
+
+# clean study names
+colnames(presence_df) <- str_remove(colnames(presence_df), "_baseMean$")
+
+# convert to plain data.frame
+presence_df <- as.data.frame(presence_df)
+
+
+# make upset plot
+jpeg("../20260418_diffAbund_allData/Upset_5studies.jpeg", width = 5, height = 3, units = "in", res = 300)
+upset(
+  as.data.frame(presence_df),
+  sets = colnames(presence_df),
+  order.by = "freq",
+  keep.order = TRUE
+)
+dev.off()
+
+```
+
+
+```{r}
+lfc_cols <- grep("_log2FoldChange$", names(merged_df), value = TRUE)
+
+consistent_dir <- merged_df %>%
+  mutate(
+    # matrix of LFCs
+    mat = select(., all_of(lfc_cols)) %>% as.matrix(),
+
+    # convert to sign matrix: -1, 0, 1, NA
+    sign_mat = sign(mat),
+
+    # count only non-NA values
+    n_observed = rowSums(!is.na(sign_mat)),
+
+    # count direction occurrences
+    n_up = rowSums(sign_mat == 1, na.rm = TRUE),
+    n_down = rowSums(sign_mat == -1, na.rm = TRUE),
+
+    direction = case_when(
+      n_up > 0 & n_down == 0 ~ "up",
+      n_down > 0 & n_up == 0 ~ "down",
+      n_up > 0 & n_down > 0 ~ "mixed",
+      TRUE ~ NA_character_
+    ),
+
+    consistency = pmax(n_up, n_down) / (n_up + n_down)
+  )  %>%
+  filter(n_observed >= 2, direction != "mixed")
+```
+
+make heatmap of logfc across studies
+```{r}
+#filt_cons_dir <- consistent_dir %>% dplyr::select(gene_id, ds1_log2FoldChange,ds2_log2FoldChange,ds3_log2FoldChange,ds4_log2FoldChange,ds5_log2FoldChange) %>% column_to_rownames(var="gene_id") %>% rename_with(~gsub("_.*", "", .)) %>% as.matrix() 
+#filt_cons_dir[is.na(filt_cons_dir)] <- 0
+
+#filter for consistently upregulated genes
+
+filt_cons_dir_pos <- consistent_dir %>% filter(direction == "up")%>% dplyr::select(gene_id, ds1_log2FoldChange,ds2_log2FoldChange,ds3_log2FoldChange,ds4_log2FoldChange,ds5_log2FoldChange) %>% column_to_rownames(var="gene_id") %>% rename_with(~gsub("_.*", "", .)) %>% as.matrix() 
+
+filt_cons_dir_pos[is.na(filt_cons_dir_pos)] <- 0
+
+rngmax <- max(filt_cons_dir_pos, na.rm = TRUE)
+
+rngmin <- min(filt_cons_dir_pos, na.rm = TRUE)
+
+#define color mapping
+col_fun <- colorRamp2(
+  c(0, 1, 8),
+  c("white", "#FEE5D9", "#CB181D")
+)
+
+#plot heatmap of genes with consistent positive FC
+
+jpeg("../20260418_diffAbund_allData/Heatmap_83upDEGs_5studies.jpeg", width = 3, height = 3, units = "in", res = 300)
+Heatmap(
+  filt_cons_dir_pos,
+  col = col_fun,
+  cluster_rows = TRUE,
+  cluster_columns = TRUE, show_row_names = FALSE, name = "log2 FC")
+dev.off()
+
+#filter for consistently downregulated genes
+filt_cons_dir_neg <- consistent_dir %>% filter(direction == "down")%>% dplyr::select(gene_id, ds1_log2FoldChange,ds2_log2FoldChange,ds3_log2FoldChange,ds4_log2FoldChange,ds5_log2FoldChange) %>% column_to_rownames(var="gene_id") %>% rename_with(~gsub("_.*", "", .)) %>% as.matrix() 
+
+filt_cons_dir_neg[is.na(filt_cons_dir_neg)] <- 0
+
+rngmax <- max(filt_cons_dir_neg, na.rm = TRUE)
+rngmin <- min(filt_cons_dir_neg, na.rm = TRUE)
+
+#define color mapping
+col_fun <- colorRamp2(
+  c(-7, -1, 0),
+  c("#08519C", "#DEEBF7", "white")
+)
+
+#plot heatmap
+jpeg("../20260418_diffAbund_allData/Heatmap_67downDEGs.jpeg", width = 3, height = 3, units = "in", res = 300)
+Heatmap(
+  filt_cons_dir_neg,
+  col = col_fun,
+  cluster_rows = TRUE,
+  cluster_columns = TRUE, show_row_names = FALSE, name = "log2 FC")
+dev.off()
+
+
+
+```
+
+Find genes in common between IDA and PADI methods
+```{r}
+
+vst_counts0418%>% filter(gene_id %in% allds_filt[which(allds_filt$PADIoverlap),"gene_id"]) %>% column_to_rownames(var="gene_id") %>% rename_with(~gsub("_.*", "", .)) %>% as.matrix() 
+  
+  
+data.frame(vst_counts0418) %>% pivot_longer(cols = 2:218, names_to = "sample", values_to = "VST") %>% filter(gene_id %in% allds_filt[which(allds_filt$PADIoverlap),"gene_id"]) %>%   
+ right_join(samplesheet %>% dplyr::select(sample,study, condition)) %>% ggplot() + geom_boxplot(aes(x = condition, y = VST), fill = NA, outlier.shape = NA) + geom_jitter(aes(x=condition,y=VST, color = study), shape = 16, size = 0.7, alpha = 0.7) +  facet_wrap(~gene_id, scales = "free")+ theme_bw()+ theme(legend.position = "top", axis.text.x =element_text(angle = 20))
+
+
+
+
+```
