@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="1550" viewBox="0 0 1200 1550">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#444"/>
+    </marker>
+    <style>
+      .title { font: 700 32px Arial, sans-serif; fill: #111; }
+      .subtitle { font: 400 17px Arial, sans-serif; fill: #555; }
+      .box { fill: #f7f7f7; stroke: #333; stroke-width: 2; rx: 14; ry: 14; }
+      .input { fill: #eef5ff; stroke: #2f5f98; stroke-width: 2; rx: 14; ry: 14; }
+      .process { fill: #f6f3ff; stroke: #6650a4; stroke-width: 2; rx: 14; ry: 14; }
+      .stats { fill: #fff4df; stroke: #9a6a16; stroke-width: 2; rx: 14; ry: 14; }
+      .diag { fill: #f3f3f3; stroke: #777; stroke-width: 2; rx: 14; ry: 14; stroke-dasharray: 8 6; }
+      .output { fill: #fff0f0; stroke: #a44; stroke-width: 2; rx: 14; ry: 14; }
+      .loopbox { fill: none; stroke: #2f5f98; stroke-width: 2; stroke-dasharray: 10 8; rx: 20; ry: 20; }
+      .link-hover { transition: opacity 0.15s; }
+      .link-hover:hover { opacity: 0.85; }
+      .label { font: 700 20px Arial, sans-serif; fill: #111; text-anchor: middle; }
+      .text { font: 400 16px Arial, sans-serif; fill: #222; text-anchor: middle; }
+      .small { font: 400 14px Arial, sans-serif; fill: #444; text-anchor: middle; }
+      .note { font: italic 14px Arial, sans-serif; fill: #555; text-anchor: middle; }
+      .looplabel { font: 700 16px Arial, sans-serif; fill: #2f5f98; }
+      .linktext { font: 700 14px Arial, sans-serif; fill: #1a5fb4; text-decoration: underline; text-anchor: middle; }
+      .arrow { stroke: #444; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .branch { stroke: #666; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <text x="600" y="48" class="title" text-anchor="middle">1_run_loso_pipeline.py — LOSO Orchestrator Flowchart</text>
+  <text x="600" y="76" class="subtitle" text-anchor="middle">Partitions samples per held-out batch; shells out to R tiering + Python classifier for each fold</text>
+
+  <!-- Config -->
+  <rect x="250" y="115" width="700" height="155" class="input"/>
+  <text x="600" y="149" class="label">Config / constants</text>
+  <text x="600" y="177" class="text">COUNTS_PATH, META_PATH (raw counts + full metadata)</text>
+  <text x="600" y="203" class="text">R_TIERING = RE_run_tiering.R    PY_CLASSIFY = lasso_prune_onefold.py</text>
+  <text x="600" y="229" class="text">BATCHES = [P&amp;S 2023, P&amp;S 2020 2015, P&amp;S 2020 2017]  →  3 LOSO folds</text>
+  <text x="600" y="253" class="small">OUTDIR = results_20_Aug_2026/    GLOBAL_SEED = 12345</text>
+
+  <path d="M600 270 L600 310" class="arrow"/>
+
+  <!-- Loop container (outline only, no fill, so it doesn't obscure inner boxes) -->
+  <rect x="130" y="310" width="940" height="930" class="loopbox"/>
+  <text x="155" y="336" class="looplabel">LOOP — for test_batch in BATCHES (3 folds)</text>
+
+  <!-- Step A: partition -->
+  <rect x="220" y="350" width="760" height="120" class="process"/>
+  <text x="600" y="382" class="label">Partition fold</text>
+  <text x="600" y="410" class="text">train_samples = meta[batch != test_batch]</text>
+  <text x="600" y="436" class="text">test_samples = meta[batch == test_batch];  fold_dir = OUTDIR/loso_&lt;batch&gt;</text>
+
+  <path d="M600 470 L600 500" class="arrow"/>
+
+  <!-- Step B: R tiering (LINKED) -->
+  <a href="RE_run_tiering_flowchart.svg" xlink:href="RE_run_tiering_flowchart.svg" class="link-hover">
+    <rect x="220" y="500" width="760" height="190" class="stats"/>
+    <text x="600" y="534" class="label">run_r_tiering()  →  Rscript RE_run_tiering.R</text>
+    <text x="600" y="564" class="text">args: --counts --meta --train_samples --panel_out --seed</text>
+    <text x="600" y="590" class="text">writes train_samples.txt; produces RE_meta_ranked.csv, RE_tiers.csv, panel_candidates.txt</text>
+    <text x="600" y="622" class="linktext">↗ click to open RE_run_tiering.R flowchart</text>
+  </a>
+
+  <path d="M600 690 L600 720" class="arrow"/>
+
+  <!-- Step C: diagnostics -->
+  <rect x="220" y="720" width="760" height="130" class="diag"/>
+  <text x="600" y="752" class="label">Diagnostics (Python-side)</text>
+  <text x="600" y="780" class="text">Read RE_meta_ranked.csv; count non-NA padj_A / padj_B / padj_C</text>
+  <text x="600" y="806" class="small">Warn + skip diagnostic summary if the file is missing for this fold</text>
+
+  <path d="M600 850 L600 880" class="arrow"/>
+
+  <!-- Step D: python classifier (LINKED) -->
+  <a href="lasso_prune_onefold_flowchart.svg" xlink:href="lasso_prune_onefold_flowchart.svg" class="link-hover">
+    <rect x="220" y="880" width="760" height="190" class="stats"/>
+    <text x="600" y="914" class="label">run_python_classifier()  →  python lasso_prune_onefold.py</text>
+    <text x="600" y="944" class="text">args: --counts --meta --panel --outdir --seed --holdout_batch</text>
+    <text x="600" y="970" class="text">produces stability_selection*.csv, panel_size_metrics*.csv,</text>
+    <text x="600" y="995" class="text">coefficients*.csv, preds*.csv, best_panel_summary*.json</text>
+    <text x="600" y="1032" class="linktext">↗ click to open lasso_prune_onefold.py flowchart</text>
+  </a>
+
+  <path d="M600 1070 L600 1100" class="arrow"/>
+
+  <!-- Step E: save config -->
+  <rect x="220" y="1100" width="760" height="100" class="box"/>
+  <text x="600" y="1132" class="label">Save fold config.json</text>
+  <text x="600" y="1162" class="small">fold #, holdout_batch, train/test sample counts, seed</text>
+
+  <!-- Loop-back arrow, routed through the lane on the right side of the container -->
+  <path d="M980 1150 L1025 1150 L1025 410 L980 410" class="branch"/>
+  <text x="1032" y="780" class="small" transform="rotate(-90 1032 780)">next fold (i+1)</text>
+
+  <path d="M600 1240 L600 1300" class="arrow"/>
+  <text x="600" y="1278" class="note">(after final fold, i = 3)</text>
+
+  <!-- Final output -->
+  <rect x="250" y="1300" width="700" height="170" class="output"/>
+  <text x="600" y="1336" class="label">All folds complete</text>
+  <text x="600" y="1368" class="text">results_20_Aug_2026/loso_&lt;batch&gt;/  for each of the 3 held-out batches</text>
+  <text x="600" y="1396" class="text">panel_candidates.txt, RE_meta_ranked.csv, RE_tiers.csv,</text>
+  <text x="600" y="1424" class="small">stability_selection*.csv, coefficients*.csv, preds*.csv, best_panel_summary*.json, config.json</text>
+</svg>
