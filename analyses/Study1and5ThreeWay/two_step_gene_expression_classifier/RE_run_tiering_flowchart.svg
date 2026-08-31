@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="2300" viewBox="0 0 1400 2300">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#444"/>
+    </marker>
+    <style>
+      .title { font: 700 34px Arial, sans-serif; fill: #111; }
+      .subtitle { font: 400 18px Arial, sans-serif; fill: #555; }
+      .box { fill: #f7f7f7; stroke: #333; stroke-width: 2; rx: 14; ry: 14; }
+      .input { fill: #eef5ff; stroke: #2f5f98; stroke-width: 2; rx: 14; ry: 14; }
+      .process { fill: #f6f3ff; stroke: #6650a4; stroke-width: 2; rx: 14; ry: 14; }
+      .stats { fill: #fff4df; stroke: #9a6a16; stroke-width: 2; rx: 14; ry: 14; }
+      .shrink { fill: #ffe9f3; stroke: #b23a72; stroke-width: 2.5; rx: 14; ry: 14; }
+      .diag { fill: #f3f3f3; stroke: #777; stroke-width: 2; rx: 14; ry: 14; stroke-dasharray: 8 6; }
+      .tier { fill: #eef8ee; stroke: #3d7a3d; stroke-width: 2; rx: 14; ry: 14; }
+      .output { fill: #fff0f0; stroke: #a44; stroke-width: 2; rx: 14; ry: 14; }
+      .label { font: 700 21px Arial, sans-serif; fill: #111; text-anchor: middle; }
+      .text { font: 400 17px Arial, sans-serif; fill: #222; text-anchor: middle; }
+      .small { font: 400 15px Arial, sans-serif; fill: #444; text-anchor: middle; }
+      .note { font: italic 15px Arial, sans-serif; fill: #555; text-anchor: middle; }
+      .arrow { stroke: #444; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .branch { stroke: #666; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <text x="700" y="52" class="title" text-anchor="middle">RE_run_tiering.R — Flowchart</text>
+  <text x="700" y="82" class="subtitle" text-anchor="middle">LOSO-safe feature selection: raw counts → per-batch DE → vectorized FE + EB-shrunk RE meta-analysis → tiered panel</text>
+
+  <!-- Inputs -->
+  <rect x="360" y="120" width="680" height="120" class="input"/>
+  <text x="700" y="154" class="label">Inputs / CLI</text>
+  <text x="700" y="184" class="text">RAW counts matrix + metadata (sample, condition, batch)</text>
+  <text x="700" y="210" class="text">training sample IDs + panel output path + seed</text>
+
+  <path d="M700 240 L700 290" class="arrow"/>
+
+  <!-- Restrict to training -->
+  <rect x="355" y="290" width="690" height="125" class="process"/>
+  <text x="700" y="324" class="label">Restrict analysis to training fold</text>
+  <text x="700" y="355" class="text">Filter metadata to train_samples</text>
+  <text x="700" y="382" class="text">Keep matching count columns; require exactly two training batches</text>
+
+  <!-- split -->
+  <rect x="100" y="465" width="515" height="160" class="process"/>
+  <text x="358" y="500" class="label">Training Batch A</text>
+  <text x="358" y="532" class="text">Subset samples in batch A</text>
+  <text x="358" y="560" class="text">Filter genes: total counts ≥ 10</text>
+  <text x="358" y="588" class="text">DESeq2: design ~ condition</text>
+
+  <rect x="785" y="465" width="515" height="160" class="process"/>
+  <text x="1042" y="500" class="label">Training Batch B</text>
+  <text x="1042" y="532" class="text">Subset samples in batch B</text>
+  <text x="1042" y="560" class="text">Filter genes: total counts ≥ 10</text>
+  <text x="1042" y="588" class="text">DESeq2: design ~ condition</text>
+
+  <path d="M700 415 L358 465" class="branch"/>
+  <path d="M700 415 L1042 465" class="branch"/>
+
+  <!-- cache -->
+  <rect x="100" y="650" width="515" height="95" class="box"/>
+  <text x="358" y="683" class="label">Batch A result</text>
+  <text x="358" y="714" class="small">log2FC, lfcSE, p, padj, baseMean</text>
+
+  <rect x="785" y="650" width="515" height="95" class="box"/>
+  <text x="1042" y="683" class="label">Batch B result</text>
+  <text x="1042" y="714" class="small">log2FC, lfcSE, p, padj, baseMean</text>
+
+  <path d="M358 625 L358 650" class="arrow"/>
+  <path d="M1042 625 L1042 650" class="arrow"/>
+
+  <!-- intersection -->
+  <rect x="375" y="790" width="650" height="105" class="process"/>
+  <text x="700" y="825" class="label">Harmonize gene universe</text>
+  <text x="700" y="857" class="text">genes_common = genes present in both A and B results</text>
+
+  <path d="M358 745 L540 790" class="branch"/>
+  <path d="M1042 745 L860 790" class="branch"/>
+
+  <path d="M700 895 L700 940" class="arrow"/>
+
+  <!-- FE fit + raw diagnostics (vectorized) -->
+  <rect x="305" y="940" width="790" height="170" class="stats"/>
+  <text x="700" y="976" class="label">Per-gene heterogeneity statistics (vectorized)</text>
+  <text x="700" y="1006" class="text">yi = (log2FC_A, log2FC_B);  vi = (lfcSE_A², lfcSE_B²)</text>
+  <text x="700" y="1034" class="text">beta_FE = inverse-variance weighted mean — reference point for Q, not a candidate model</text>
+  <text x="700" y="1062" class="text">Q = Cochran's Q;  tau2_dl = DerSimonian-Laird estimate (df = k−1 = 1)</text>
+  <text x="700" y="1088" class="small">beta_FE / p_FE / I² retained as diagnostics only — never used for ranking</text>
+
+  <path d="M700 1110 L700 1150" class="arrow"/>
+
+  <!-- Empirical-Bayes shrinkage -->
+  <rect x="280" y="1150" width="840" height="180" class="shrink"/>
+  <text x="700" y="1184" class="label">Empirical-Bayes shrinkage of Q across genes</text>
+  <text x="700" y="1212" class="text">limma::squeezeVar(Q, df = 1) — shrink Q, not the floored tau2_dl</text>
+  <text x="700" y="1236" class="small">(tau2_dl floors to 0 for ~68% of genes by chance alone at k=2; breaks squeezeVar)</text>
+  <text x="700" y="1262" class="text">tau2_shrunk = max(0, (Q_shrunk − 1) / C)</text>
+  <text x="700" y="1290" class="note">Observed: prior tau2 ≈ 0.023, df_prior ≈ 17 (n ≈ 30,894 genes)</text>
+
+  <path d="M700 1330 L700 1370" class="arrow"/>
+
+  <!-- RE pooling with shrunk tau2 -->
+  <rect x="330" y="1370" width="740" height="140" class="stats"/>
+  <text x="700" y="1404" class="label">RE pooled estimate using shrunk tau2</text>
+  <text x="700" y="1432" class="text">weights = 1 / (vi + tau2_shrunk)</text>
+  <text x="700" y="1460" class="text">beta_RE, se_RE, p_RE — replaces unstable per-gene REML at k=2</text>
+  <text x="700" y="1486" class="small">beta_FE / p_FE kept only as diagnostics</text>
+
+  <path d="M700 1510 L700 1550" class="arrow"/>
+
+  <!-- RE-only -->
+  <rect x="330" y="1550" width="740" height="145" class="stats"/>
+  <text x="700" y="1585" class="label">RE-only inference / ranking</text>
+  <text x="700" y="1617" class="text">p_meta = p_RE</text>
+  <text x="700" y="1645" class="text">score = −log10(p_RE); rank by score</text>
+  <text x="700" y="1672" class="text">q_meta = BH-adjusted p_RE</text>
+
+  <!-- output ranked -->
+  <rect x="95" y="1740" width="470" height="105" class="output"/>
+  <text x="330" y="1777" class="label">Output full ranking</text>
+  <text x="330" y="1810" class="text">RE_meta_ranked.csv</text>
+
+  <!-- diagnostic -->
+  <rect x="835" y="1730" width="470" height="135" class="diag"/>
+  <text x="1070" y="1765" class="label">Diagnostic only</text>
+  <text x="1070" y="1797" class="text">DESeq2 LRT:</text>
+  <text x="1070" y="1823" class="small">full ~ batch + condition + batch:condition</text>
+  <text x="1070" y="1848" class="small">reduced ~ batch + condition</text>
+
+  <path d="M610 1695 L330 1740" class="branch"/>
+  <path d="M790 1695 L1070 1730" class="branch"/>
+
+  <!-- interaction note -->
+  <rect x="845" y="1885" width="450" height="82" class="diag"/>
+  <text x="1070" y="1916" class="text">Report genes with nominal</text>
+  <text x="1070" y="1943" class="text">interaction p &lt; 0.05</text>
+  <path d="M1070 1865 L1070 1885" class="arrow"/>
+  <text x="1070" y="1993" class="note">Not used as a hard exclusion filter</text>
+
+  <!-- tiering -->
+  <rect x="345" y="1905" width="600" height="205" class="tier"/>
+  <text x="645" y="1941" class="label">Tier assignment</text>
+  <text x="645" y="1977" class="text">Common requirements: same sign in A/B</text>
+  <text x="645" y="2005" class="text">|log2FC| ≥ 0.5 in both studies + expression floor</text>
+  <text x="645" y="2041" class="text">Tier 1: padj_A&lt;0.05 AND padj_B&lt;0.05 AND q_meta&lt;0.05</text>
+  <text x="645" y="2071" class="text">Tier 2: one study FDR-significant AND q_meta&lt;0.10</text>
+
+  <path d="M700 1695 L645 1905" class="arrow"/>
+
+  <!-- tier output -->
+  <rect x="115" y="2155" width="500" height="85" class="output"/>
+  <text x="365" y="2187" class="label">RE_tiers.csv</text>
+  <text x="365" y="2215" class="small">Full meta-analysis results + Tier labels</text>
+
+  <rect x="785" y="2155" width="500" height="85" class="output"/>
+  <text x="1035" y="2187" class="label">RE_panel output</text>
+  <text x="1035" y="2215" class="small">Tier 1 + Tier 2 genes, ranked; topN = 2000</text>
+
+  <path d="M520 2110 L365 2155" class="branch"/>
+  <path d="M770 2110 L1035 2155" class="branch"/>
+</svg>
